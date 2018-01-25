@@ -5,11 +5,18 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
+    private double taxRate = 1.13;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +33,32 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        final EditText taxInput = findViewById(R.id.taxInput);
+        Button btncalc = findViewById(R.id.btncalc);
+        final Button btnadd =  findViewById(R.id.btnadd);
+        final TextView taxOutput =   findViewById(R.id.taxOutput);
+
+        //calculate tax on expense input
+        btncalc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("btncalc","User has put in valid expense, displaying tax");
+                double taxAmout = Double.parseDouble(taxInput.getText().toString()) * 0.13;
+                double expense = Math.floor(100 * Double.parseDouble(taxInput.getText().toString())) / 100 ;
+                taxOutput.setText(String.format ("%.2f", expense * taxRate));
+                btnadd.setVisibility(View.VISIBLE);
+            }
+        });
+        //add to records
+        btnadd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
     }
 
     @Override
