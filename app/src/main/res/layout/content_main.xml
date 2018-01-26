@@ -8,22 +8,12 @@
     tools:context="enactus.budget.enactus.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <Space
-        android:id="@+id/space"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="138dp" />
-
     <EditText
         android:id="@+id/taxInput"
-        android:layout_width="wrap_content"
+        android:layout_width="213dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="numberDecimal"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,46 +23,64 @@
         android:id="@+id/btncalc"
         android:layout_width="127dp"
         android:layout_height="47dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="68dp"
         android:layout_marginTop="8dp"
         android:text="Calculate"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.666"
-        app:layout_constraintStart_toEndOf="@+id/taxInput"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/taxInput" />
 
     <TextView
         android:id="@+id/taxOutput"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="28dp"
+        android:layout_width="74dp"
+        android:layout_height="29dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
         android:text="TextView"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/space"
-        app:layout_constraintEnd_toStartOf="@+id/space"
-        app:layout_constraintHorizontal_bias="0.47"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taxInput"
-        app:layout_constraintVertical_bias="0.105" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnadd"
         android:layout_width="94dp"
         android:layout_height="35dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Add"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/taxOutput" />
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="394dp"
+        android:layout_height="267dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TableRow
+            android:id="@+id/tr1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Add"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/space"
+        android:text="Expenses"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.481"
-        app:layout_constraintStart_toEndOf="@+id/taxOutput"
-        app:layout_constraintTop_toBottomOf="@+id/btncalc"
-        app:layout_constraintVertical_bias="0.636" />
+        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>
