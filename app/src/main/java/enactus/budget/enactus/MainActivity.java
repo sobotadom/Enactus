@@ -1,5 +1,6 @@
 package enactus.budget.enactus;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -43,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         final Button btnadd =  findViewById(R.id.btnadd);
         final TextView taxOutput =   findViewById(R.id.taxOutput);
         final TableLayout tl = findViewById(R.id.tableLayout);
-        final TableRow tr = findViewById(R.id.tr1);
 
 
         //calculate tax on expense input
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void addExpense(){
+        /*
         TableRow tr = new TableRow(this);
         TableLayout tl = findViewById(R.id.tableLayout);
 
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         tr.addView(category);
         tr.addView(cost);
         tl.addView(tr);
+        */
+        startActivity(new Intent(MainActivity.this, Expense.class));
 
     }
     public boolean onCreateOptionsMenu(Menu menu) {
