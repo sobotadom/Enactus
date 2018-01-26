@@ -32,20 +32,16 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                addExpense();
             }
         });
 
 
 
-        final EditText taxInput = findViewById(R.id.taxInput);
-        Button btncalc = findViewById(R.id.btncalc);
-        final Button btnadd =  findViewById(R.id.btnadd);
-        final TextView taxOutput =   findViewById(R.id.taxOutput);
+
         final TableLayout tl = findViewById(R.id.tableLayout);
 
-
+        /*
         //calculate tax on expense input
         btncalc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,11 +59,12 @@ public class MainActivity extends AppCompatActivity {
         btnadd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addExpense();
+
+
             }
         });
 
-
+        */
     }
     public void addExpense(){
         /*
