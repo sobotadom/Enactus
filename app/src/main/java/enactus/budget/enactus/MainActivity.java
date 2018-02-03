@@ -19,7 +19,9 @@ import android.widget.TableRow;
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
-    private double taxRate = 1.13, expense = 0;
+
+    private static int REQUEST_CODE = 0;
+    private double totalSpent = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,23 +69,50 @@ public class MainActivity extends AppCompatActivity {
         */
     }
     public void addExpense(){
-        /*
+
+
+        startActivityForResult(new Intent(MainActivity.this, Expense.class), REQUEST_CODE);
+
+
+
+    }
+    public void enterExpense(double expense){
+        TextView txt = findViewById(R.id.spent);
+        totalSpent += expense;
+        txt.setText("Total Spent:$" + totalSpent);
+    }
+
+
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+
+        //GET result from entering expense, database entry
         TableRow tr = new TableRow(this);
         TableLayout tl = findViewById(R.id.tableLayout);
 
         TextView category = new TextView(this);
         category.setText("Category");
         TextView cost = new TextView(this);
-        cost.setText(Double.toString(expense));
 
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // A contact was picked.  Here we will just display it
+                // to the user.
 
-        tr.addView(category);
-        tr.addView(cost);
-        tl.addView(tr);
-        */
-        startActivity(new Intent(MainActivity.this, Expense.class));
+                Bundle b = data.getBundleExtra("EXPENSE");
+                category.setText(b.getString("category"));
+                cost.setText(b.getString("STR"));
 
+                tr.addView(category);
+                tr.addView(cost);
+                tl.addView(tr);
+
+                enterExpense(b.getDouble("Expense"));
+            }
+        }
     }
+
+
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
