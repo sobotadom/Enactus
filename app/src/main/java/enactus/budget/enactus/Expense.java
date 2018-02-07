@@ -30,6 +30,7 @@ import org.javatuples.Quintet;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -38,24 +39,26 @@ import java.util.Date;
 
 public class Expense  extends Activity{
     private double taxRate = 1.13;
-    private String expenseStr, category ;
+    private String expenseStr, category, comment;
     private double subtotal, expense , total;
-    private ArrayList<Quintet> tuples;
-    private int number;
+    private ArrayList<Quintet<Date,Double,Integer,String,String>> tuples;
+    private int number, finalindex;
     @Override
     public void onCreate(Bundle savedInstanceState){
 
-
+        tuples = new ArrayList<>();
         //Set   up window
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expense);
         expense = 0;
         total = 0;
+        finalindex = 0;
+
 
         //Configure drop down menu for categories
         //final Spinner spinner =  findViewById(R.id.spinner);
 
-        String[] categories = new String[]{
+        final String[] categories = new String[]{
                 "Category",
                 "Cat1",
                 "Cat2",
@@ -92,9 +95,28 @@ public class Expense  extends Activity{
                 return view;
             }
         };
+        final Spinner spin = findViewById(R.id.spinner);
+        spin.setAdapter(adapter);
 
-        //adapter.setDropDownViewResource(R.layout.spinner_item);
-        //spinner.setAdapter(adapter);
+        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItemText = (String) parent.getItemAtPosition(position);
+                // If user change the default selection
+                // First item is disable and it is used for hint
+                if(position > 0){
+                    // Notify the selected item text
+                    category = spin.getSelectedItem().toString();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+
 
 
         /*
@@ -109,7 +131,7 @@ public class Expense  extends Activity{
         final TextView expenseoutput = findViewById(R.id.expenseoutput);
         final EditText expenseinput = findViewById(R.id.expenseinput);
         final EditText num = findViewById(R.id.num);
-
+        final EditText commented = findViewById(R.id.com);
 
 
 
@@ -149,6 +171,10 @@ public class Expense  extends Activity{
                 final TableLayout entries = findViewById(R.id.entries);
                 final TableRow newEntry = new TableRow(btnconfirm.getContext());
 
+               // TextView entryNumber = new TextView(btnconfirm.getContext());
+               // entryNumber.setText(finalindex);
+               // newEntry.addView(entryNumber);
+               // finalindex++;
 
                 //show sub total
                 TextView txt = new TextView(btnconfirm.getContext());
@@ -164,61 +190,61 @@ public class Expense  extends Activity{
 
 
                 //set up subtotal category selection
-                Spinner newspin = new Spinner(btnconfirm.getContext());
-                newspin.setAdapter(adapter);
-                newEntry.addView(newspin);
-                newspin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        String selectedItemText = (String) parent.getItemAtPosition(position);
-                        // If user change the default selection
-                        // First item is disable and it is used for hint
-                        if(position > 0){
-                            // Notify the selected item text
+                TextView newCat = new TextView(btnconfirm.getContext());
+                newCat.setText(category);
+                newEntry.addView(newCat);
 
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
-                    }
-                });
 
 
 
                 //remove button
                 final Button newremove = new Button(btnconfirm.getContext());
+                newEntry.addView(newremove);
                 newremove.setText("X");
                 newremove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Log.i("REMOVE", "REMOVING ENTRY FROM LIST AND RESET");
+
                         entries.removeView(newEntry);
                         TextView temp = (TextView) newEntry.getChildAt(1);
                         String str1 = temp.getText().toString().substring(1);
                         total -= Double.parseDouble(str1);
                         TextView totaltext = findViewById(R.id.total);
                         totaltext.setText("Total: $" + total);
-
-
                         expense = 0.0;
                         subtotal = 0.0;
+
+
+
+
+
+                        //get the index of entry to remove it from the tuples list
+
+                        /*************
+                         *
+                         *
+                         * IM STILL FIGURING OUT THE REMOVING ENTRY FROM TUPLE LIST WHEN REMOVE IS PRESSED
+                         *
+                         */
+                        //TableRow thisEntry = (TableRow) newremove.getParent();
+                        //int index = entries.indexOfChild(thisEntry);
+
+                        //Log.i("REMOVE", "REMOVING ENTRY AT INDEX " + index );
+                       // tuples.remove(index);
                     }
                 });
-                newEntry.addView(newremove);
+
+
+
+
 
                 entries.addView(newEntry);
 
                 total += subtotal;
-                //clear out previous
-                num.setText("");
-                expenseinput.setText("");
-                expenseoutput.setText("");
-                expense = 0.0;
-                subtotal = 0.0;
 
-                TextView totalstr = findViewById(R.id.total);
-                totalstr.setText("Total: $" + total);
+
+
 
                 /***
                  *
@@ -228,22 +254,63 @@ public class Expense  extends Activity{
                  *
                  *
                  */
-                Quintet<Date, Double, Integer, String, String> tuple;
-                /********
-                 *
-                 * testing commiting from my laptop
-                 *
-                 *
-                 */
+                Date currentDay = Calendar.getInstance().getTime();
+                comment = commented.getText().toString();
+
+                Quintet<Date, Double, Integer, String, String> tuple = new Quintet<>(currentDay,expense,number,category,comment);
+                tuples.add(tuple);
+                Log.i("TUPLES", "ADDED NEW TUPLE IN EXPENSE.JAVA < " + currentDay + " " +  expense + " " + number + " " + category + " " + comment + " >");
+
+
+
+                /////////////////////////////////////////////////////////////////////
+                //clear out previous
+                num.setText("");
+                expenseinput.setText("");
+                expenseoutput.setText("");
+                commented.setText("");
+                spin.setAdapter(null);
+                spin.setAdapter(adapter);
+
+                expense = 0.0;
+                subtotal = 0.0;
+
+                TextView totalstr = findViewById(R.id.total);
+                totalstr.setText("Total: $" + total);
+
+
+
+
+
+
+
+
+
+
             }
         });
 
 
-/*
+
         btnenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                /***
+                 *
+                 *
+                 * HERE IS WHERE THE USER WILL CONFIRM THEIR ENTRIES, FROM HERE YOU CAN UPDATE THE DATABASE
+                 *
+                 *
+                 */
+
+
+
+
+
+
+
+                /*
                 //ensure a category is seleceted
                 if ((!spinner.getSelectedItem().toString().equals("Select a category..."))
                        && (expense != 0)){
@@ -282,11 +349,12 @@ public class Expense  extends Activity{
                     alert11.show();
 
                 }
+                */
 
             }
         });
 
-        */
+
     }
 
 
