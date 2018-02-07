@@ -43,6 +43,7 @@ public class Expense  extends Activity{
     private double subtotal, expense , total;
     private ArrayList<Quintet<Date,Double,Integer,String,String>> tuples;
     private int number, finalindex;
+    private boolean isValidExpense;
     @Override
     public void onCreate(Bundle savedInstanceState){
 
@@ -53,10 +54,15 @@ public class Expense  extends Activity{
         expense = 0;
         total = 0;
         finalindex = 0;
+        category = "Category";
+        isValidExpense = false;
 
 
-        //Configure drop down menu for categories
-        //final Spinner spinner =  findViewById(R.id.spinner);
+        /**
+         *      Configure drop down menu for categories
+         */
+
+
 
         final String[] categories = new String[]{
                 "Category",
@@ -118,11 +124,34 @@ public class Expense  extends Activity{
         adapter.setDropDownViewResource(R.layout.spinner_item);
 
 
+        /**
+         *
+         *
+         * SETUP for popup message for vvalidation
+         */
+
+
+        final AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setCancelable(true);
+        builder1.setPositiveButton(
+                "Ok",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+
+
 
         /*
-
+            end spinner and popup config
         */
         //---------------------------------------------------------------
+
+
+
+
 
         //get expense value
         Button btnadd = findViewById(R.id.btnadd);
@@ -135,17 +164,15 @@ public class Expense  extends Activity{
 
 
 
-        //display expense value * tax
-
 
         /***
          *
-         * Im planning on replacing this button with just an edit text text change listener b
+         * Im planning on replacing this button with just an edit text text change listener but thats just cosmetic
          */
         btnadd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expense= Double.parseDouble(expenseinput.getText().toString());
+
 
                 //number validation
                 if( num.getText().toString().equals("")){
@@ -154,131 +181,189 @@ public class Expense  extends Activity{
                 else{
                     number = Integer.parseInt(num.getText().toString());
                 }
-                subtotal = Math.round(number * expense * 100.0) / 100.0;
-                Log.d("CALCULATE", String.format("%.2f",subtotal));
-                expenseStr = "$ " + String.format("%.2f",subtotal);
-                expenseoutput.setText(expenseStr);
+
+                //expense validation, minumum one cent
+                String temp = expenseinput.getText().toString();
+                if (temp.matches("")){
+                    //invalid
+
+                    Log.e("BTNADD", "EXPENSE NOT ENTERED");
+                    builder1.setMessage("Please enter an expense");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else if(Double.parseDouble(temp) < 0.01) {
+                    //invalid
+
+                    Log.e("BTNADD","EXPENSE LESS THAN 1 CENT");
+                    builder1.setMessage("Please enter at least $0.01");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else {
+                    //valid
+                    isValidExpense = true;
+                    expense= Double.parseDouble(temp);
+                    subtotal = Math.round(number * expense * 100.0) / 100.0;
+                    Log.d("BTNADD", String.format("%.2f",subtotal));
+                    expenseStr = "$ " + String.format("%.2f",subtotal);
+                    expenseoutput.setText(expenseStr);
+                }
+
+
+
             }
         });
 
 
-        //Enter expense into total and reset expense
+        //Enter expense into tuples and reset expense
         btnconfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                if(!isValidExpense){
+                    Log.e("BTNCONFIRM", "INVALID EXPENSE");
+                    builder1.setMessage("Please enter a valid expense");
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+                else{
 
-                final TableLayout entries = findViewById(R.id.entries);
-                final TableRow newEntry = new TableRow(btnconfirm.getContext());
-
-               // TextView entryNumber = new TextView(btnconfirm.getContext());
-               // entryNumber.setText(finalindex);
-               // newEntry.addView(entryNumber);
-               // finalindex++;
-
-                //show sub total
-                TextView txt = new TextView(btnconfirm.getContext());
-                String entry = number + " x $" + expense;
-                txt.setText(entry);
-                newEntry.addView(txt);
-
-
-                TextView txt2 = new TextView(btnconfirm.getContext());
-                String strsubtotal = "$" + subtotal;
-                txt2.setText(strsubtotal);
-                newEntry.addView(txt2);
-
-
-                //set up subtotal category selection
-                TextView newCat = new TextView(btnconfirm.getContext());
-                newCat.setText(category);
-                newEntry.addView(newCat);
+                    final TableLayout entries = findViewById(R.id.entries);
+                    final TableRow newEntry = new TableRow(btnconfirm.getContext());
 
 
 
 
-                //remove button
-                final Button newremove = new Button(btnconfirm.getContext());
-                newEntry.addView(newremove);
-                newremove.setText("X");
-                newremove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.i("REMOVE", "REMOVING ENTRY FROM LIST AND RESET");
+                    /***
+                     * category validation
+                     */
+                    if(category.equals("Category")){
+                        Log.e("BTNCONFIRM", "CATEGORY NOT SELECTED");
+                        builder1.setMessage("Please enter a category");
+                        AlertDialog alert11 = builder1.create();
+                        alert11.show();
+                    }
+                    else{
+                        TextView newCat = new TextView(btnconfirm.getContext());
+                        newCat.setText(category);
 
-                        entries.removeView(newEntry);
-                        TextView temp = (TextView) newEntry.getChildAt(1);
-                        String str1 = temp.getText().toString().substring(1);
-                        total -= Double.parseDouble(str1);
-                        TextView totaltext = findViewById(R.id.total);
-                        totaltext.setText("Total: $" + total);
-                        expense = 0.0;
-                        subtotal = 0.0;
-
-
+                        //comment can be empty, so no validation needed
+                        TextView newComment = new TextView(btnconfirm.getContext());
+                        comment = commented.getText().toString();
+                        newComment.setText(comment);
 
 
+                        //show number and expense
+                        TextView txt = new TextView(btnconfirm.getContext());
+                        String entry = number + " x $" + expense;
+                        txt.setText(entry);
+                        newEntry.addView(txt);
 
-                        //get the index of entry to remove it from the tuples list
+                        //show subtotal
+                        TextView txt2 = new TextView(btnconfirm.getContext());
+                        String strsubtotal = "$" + subtotal;
+                        txt2.setText(strsubtotal);
+                        newEntry.addView(txt2);
 
-                        /*************
+
+                        //show category
+                        newEntry.addView(newCat);
+
+                        //show comment
+                        newEntry.addView(newComment);
+
+
+
+
+                        //show remove button
+                        final Button newremove = new Button(btnconfirm.getContext());
+                        newEntry.addView(newremove);
+                        newremove.setText("X");
+                        newremove.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Log.i("REMOVE", "REMOVING ENTRY FROM LIST AND RESET");
+
+                                entries.removeView(newEntry);
+                                TextView temp = (TextView) newEntry.getChildAt(1);
+                                String str1 = temp.getText().toString().substring(1);
+                                total -= Double.parseDouble(str1);
+                                TextView totaltext = findViewById(R.id.total);
+                                totaltext.setText("Total: $" + total);
+                                expense = 0.0;
+                                subtotal = 0.0;
+
+
+
+
+
+                                //get the index of entry to remove it from the tuples list
+
+                                /*************
+                                 *
+                                 *
+                                 * IM STILL FIGURING OUT THE REMOVING ENTRY FROM TUPLE LIST WHEN REMOVE IS PRESSED
+                                 *
+                                 */
+                                //TableRow thisEntry = (TableRow) newremove.getParent();
+                                //int index = entries.indexOfChild(thisEntry);
+
+                                //Log.i("REMOVE", "REMOVING ENTRY AT INDEX " + index );
+                                // tuples.remove(index);
+                            }
+                        });
+
+
+
+                        //ADD THIS NEW VALID ENTRY TO TABLE OF ENTRIES
+                        entries.addView(newEntry);
+                        //INCREASE THE OVERALL TOTAL BY THE SUBTOTAL(NUMBER * EXPENSE)
+                        total += subtotal;
+
+
+
+
+                        /***
                          *
                          *
-                         * IM STILL FIGURING OUT THE REMOVING ENTRY FROM TUPLE LIST WHEN REMOVE IS PRESSED
+                         * FOR DATABASE, TUPLES WILL HOLD INFORMATION
+                         *
+                         *
                          *
                          */
-                        //TableRow thisEntry = (TableRow) newremove.getParent();
-                        //int index = entries.indexOfChild(thisEntry);
+                        Date currentDay = Calendar.getInstance().getTime();
 
-                        //Log.i("REMOVE", "REMOVING ENTRY AT INDEX " + index );
-                       // tuples.remove(index);
+
+                        Quintet<Date, Double, Integer, String, String> tuple = new Quintet<>(currentDay,expense,number,category,comment);
+                        tuples.add(tuple);
+                        Log.i("TUPLES", "ADDED NEW TUPLE IN EXPENSE.JAVA < " + currentDay + " " +  expense + " " + number + " " + category + " " + comment + " >");
+
+
+
+
+
+
+                        /////////////////////////////////////////////////////////////////////
+                        //clear out previous
+                        num.setText("");
+                        expenseinput.setText("");
+                        expenseoutput.setText("");
+                        commented.setText("");
+                        spin.setAdapter(null);
+                        spin.setAdapter(adapter);
+                        category = "Category";
+                        expense = 0.0;
+                        subtotal = 0.0;
+                        isValidExpense = false;
+                        TextView totalstr = findViewById(R.id.total);
+                        totalstr.setText("Total: $" + total);
+
+
+
                     }
-                });
 
-
-
-
-
-                entries.addView(newEntry);
-
-                total += subtotal;
-
-
-
-
-                /***
-                 *
-                 *
-                 * FOR DATABASE, TUPLES WILL HOLD INFORMATION
-                 *
-                 *
-                 *
-                 */
-                Date currentDay = Calendar.getInstance().getTime();
-                comment = commented.getText().toString();
-
-                Quintet<Date, Double, Integer, String, String> tuple = new Quintet<>(currentDay,expense,number,category,comment);
-                tuples.add(tuple);
-                Log.i("TUPLES", "ADDED NEW TUPLE IN EXPENSE.JAVA < " + currentDay + " " +  expense + " " + number + " " + category + " " + comment + " >");
-
-
-
-                /////////////////////////////////////////////////////////////////////
-                //clear out previous
-                num.setText("");
-                expenseinput.setText("");
-                expenseoutput.setText("");
-                commented.setText("");
-                spin.setAdapter(null);
-                spin.setAdapter(adapter);
-
-                expense = 0.0;
-                subtotal = 0.0;
-
-                TextView totalstr = findViewById(R.id.total);
-                totalstr.setText("Total: $" + total);
-
-
+                }
 
 
 
