@@ -333,19 +333,15 @@ public class Expense  extends Activity{
                          *
                          */
                         Date currentDay = Calendar.getInstance().getTime();
-
-
                         Quintet<Date, Double, Integer, String, String> tuple = new Quintet<>(currentDay,expense,number,category,comment);
                         tuples.add(tuple);
                         Log.i("TUPLES", "ADDED NEW TUPLE IN EXPENSE.JAVA < " + currentDay + " " +  expense + " " + number + " " + category + " " + comment + " >");
 
 
 
-
-
-
                         /////////////////////////////////////////////////////////////////////
                         //clear out previous
+                        Log.i("BTNCONFIRM", "RESETTING EXPENSES AFTER SUCCESSFUL ADDITION OF ENTRY");
                         num.setText("");
                         expenseinput.setText("");
                         expenseoutput.setText("");
@@ -389,52 +385,6 @@ public class Expense  extends Activity{
                  *
                  */
 
-
-
-
-
-
-
-                /*
-                //ensure a category is seleceted
-                if ((!spinner.getSelectedItem().toString().equals("Select a category..."))
-                       && (expense != 0)){
-                    Intent intent = new Intent();
-                    Bundle b = new Bundle();
-
-                    b.putDouble("Expense",expense);
-                    b.putString("STR",expenseStr);
-                    b.putString("category",spinner.getSelectedItem().toString());
-                    intent.putExtra("EXPENSE",b);
-                    setResult(RESULT_OK,intent);
-                    finish();
-                }
-                else {
-                    //prompt user to select a category
-
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(btnenter.getContext());
-                    if(spinner.getSelectedItem().toString().equals("Select a category...")){
-                        builder1.setMessage("Please select a category");
-                    }
-                    if( expense == 0){
-                        builder1.setMessage("Please enter an expense");
-                    }
-                    builder1.setCancelable(true);
-
-                    builder1.setPositiveButton(
-                            "Ok",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-
-                    AlertDialog alert11 = builder1.create();
-                    alert11.show();
-
-                }
-                */
 
             }
         });
