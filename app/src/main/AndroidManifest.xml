@@ -20,7 +20,8 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".Expense"></activity>
+        <activity android:name=".Expense"
+            android:windowSoftInputMode="adjustPan"></activity>
     </application>
 
 </manifest>

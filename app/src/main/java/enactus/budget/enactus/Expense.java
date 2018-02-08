@@ -256,15 +256,19 @@ public class Expense  extends Activity{
 
                         //show number and expense
                         TextView txt = new TextView(btnconfirm.getContext());
-                        String entry = number + " x $" + expense;
-                        txt.setText(entry);
+                        txt.setText(Integer.toString(number));
                         newEntry.addView(txt);
 
-                        //show subtotal
                         TextView txt2 = new TextView(btnconfirm.getContext());
-                        String strsubtotal = "$" + subtotal;
-                        txt2.setText(strsubtotal);
+                        txt2.setText("$ " + Double.toString(expense));
                         newEntry.addView(txt2);
+                        Log.i("EXPENSE",Double.toString(expense));
+                        Log.i("EXPENSE", Double.toString(subtotal));
+                        //show subtotal
+                        TextView txt3 = new TextView(btnconfirm.getContext());
+                        String strsubtotal = "$" + subtotal;
+                        txt3.setText(strsubtotal);
+                        newEntry.addView(txt3);
 
 
                         //show category
@@ -286,7 +290,7 @@ public class Expense  extends Activity{
                                 Log.i("REMOVE", "REMOVING ENTRY FROM LIST AND RESET");
 
                                 entries.removeView(newEntry);
-                                TextView temp = (TextView) newEntry.getChildAt(1);
+                                TextView temp = (TextView) newEntry.getChildAt(2);
                                 String str1 = temp.getText().toString().substring(1);
                                 total -= Double.parseDouble(str1);
                                 TextView totaltext = findViewById(R.id.total);
