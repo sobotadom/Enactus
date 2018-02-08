@@ -307,13 +307,10 @@ public class Expense  extends Activity{
                                 /*************
                                  *
                                  *
-                                 * IM STILL FIGURING OUT THE REMOVING ENTRY FROM TUPLE LIST WHEN REMOVE IS PRESSED
+                                 * STILL NOT WORKING LOL
                                  *
                                  */
-                                //TableRow thisEntry = (TableRow) newremove.getParent();
-                                //int index = entries.indexOfChild(thisEntry);
 
-                                //Log.i("REMOVE", "REMOVING ENTRY AT INDEX " + index );
                                 // tuples.remove(index);
                             }
                         });
