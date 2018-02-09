@@ -14,6 +14,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -42,12 +43,15 @@ public class Expense  extends Activity{
     private String expenseStr, category, comment;
     private double subtotal, expense , total;
     private ArrayList<Quintet<Date,Double,Integer,String,String>> tuples;
+
     private int number, finalindex;
     private boolean isValidExpense;
     @Override
     public void onCreate(Bundle savedInstanceState){
 
+        finalindex = 1;
         tuples = new ArrayList<>();
+
         //Set   up window
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expense);
@@ -259,17 +263,19 @@ public class Expense  extends Activity{
                         txt.setText(Integer.toString(number));
                         newEntry.addView(txt);
 
+
                         TextView txt2 = new TextView(btnconfirm.getContext());
                         txt2.setText("$ " + Double.toString(expense));
                         newEntry.addView(txt2);
                         Log.i("EXPENSE",Double.toString(expense));
                         Log.i("EXPENSE", Double.toString(subtotal));
                         //show subtotal
+                        /*
                         TextView txt3 = new TextView(btnconfirm.getContext());
                         String strsubtotal = "$" + subtotal;
                         txt3.setText(strsubtotal);
                         newEntry.addView(txt3);
-
+                        */
 
                         //show category
                         newEntry.addView(newCat);
@@ -277,8 +283,9 @@ public class Expense  extends Activity{
                         //show comment
                         newEntry.addView(newComment);
 
-
-
+                        //set tag for index
+                        newEntry.setTag(finalindex);
+                        finalindex++;
 
                         //show remove button
                         final Button newremove = new Button(btnconfirm.getContext());
@@ -290,28 +297,48 @@ public class Expense  extends Activity{
                                 Log.i("REMOVE", "REMOVING ENTRY FROM LIST AND RESET");
 
                                 entries.removeView(newEntry);
-                                TextView temp = (TextView) newEntry.getChildAt(2);
-                                String str1 = temp.getText().toString().substring(1);
-                                total -= Double.parseDouble(str1);
+
+                                TextView temp = (TextView) newEntry.getChildAt(0);
+                                String str1 = temp.getText().toString();
+                                TextView temp2 = (TextView) newEntry.getChildAt(1);
+                                String str2 = temp2.getText().toString().substring(2);
+                                total -= Integer.parseInt(str1) * Double.parseDouble(str2);
+
                                 TextView totaltext = findViewById(R.id.total);
-                                totaltext.setText("Total: $" + total);
+                                totaltext.setText("Total: $" + String.format("%.2f",total));
+
                                 expense = 0.0;
                                 subtotal = 0.0;
 
 
 
+                                /*
+                                TableRow parent =(TableRow) v.getParent();
+                                TableLayout table = findViewById(R.id.entries);
+                                int i = (int) parent.getTag();
+                                Log.i("INDEX",Integer.toString(i));
+
+                                /*for(i = i; i< finalindex; i++){
+                                    TableRow current = (TableRow) table.getChildAt(i);
+                                    current.setTag(i - 1);
+                                }
+
+                                tuples.remove(tuples.get(i));
+                                finalindex--;
+
+                                for(i=i;i< table.getChildCount();i++){
+                                    TableRow row = (TableRow) table.getChildAt(i);
+                                    row.setTag(i - 1);
+                                }
 
 
                                 //get the index of entry to remove it from the tuples list
 
-                                /*************
-                                 *
-                                 *
-                                 * STILL NOT WORKING LOL
-                                 *
-                                 */
 
-                                // tuples.remove(index);
+                                for(Quintet<Date,Double,Integer,String,String> q : tuples){
+                                    Log.d("EFNA:FNAPGBNA:G", Double.toString(q.getValue1()));
+                                }
+                                */
                             }
                         });
 
@@ -336,6 +363,8 @@ public class Expense  extends Activity{
                         Date currentDay = Calendar.getInstance().getTime();
                         Quintet<Date, Double, Integer, String, String> tuple = new Quintet<>(currentDay,expense,number,category,comment);
                         tuples.add(tuple);
+
+
                         Log.i("TUPLES", "ADDED NEW TUPLE IN EXPENSE.JAVA < " + currentDay + " " +  expense + " " + number + " " + category + " " + comment + " >");
 
 
@@ -356,8 +385,17 @@ public class Expense  extends Activity{
                         TextView totalstr = findViewById(R.id.total);
                         totalstr.setText("Total: $" + total);
 
+                        //close keyboard
+                        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+
+                        //make table visible
+                        LinearLayout l = findViewById(R.id.lay);
 
 
+                        for(int i = l.indexOfChild(btnconfirm);i < l.getChildCount(); i++){
+                            l.getChildAt(i).setVisibility(View.VISIBLE);
+                        }
                     }
 
                 }

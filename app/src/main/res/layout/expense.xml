@@ -6,182 +6,246 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/lay"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/lay"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/num"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="#"
-                android:inputType="number"
-                android:textAlignment="center"
-                android:textStyle="bold" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:layout_weight="1" />
 
-            <EditText
-                android:id="@+id/expenseinput"
+            <View
+                style="@style/Divider"
+                android:layout_height="2dp"
+                android:background="@android:color/black" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/defaultExpense"
-                android:inputType="numberDecimal"
-                android:paddingBottom="16dp"
-                android:paddingTop="16dp"
-                android:textAlignment="center" />
-        </LinearLayout>
+                android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="#"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/expenseinput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/defaultExpense"
+                    android:inputType="numberDecimal"
+                    android:paddingBottom="16dp"
+                    android:paddingTop="16dp"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnadd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Add" />
+
+                <TextView
+                    android:id="@+id/expenseoutput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <View
+                style="@style/Divider"
+                android:layout_height="2dp"
+                android:background="@android:color/background_dark" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_weight="1"
+                android:background="@android:color/black" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <EditText
+                android:id="@+id/com"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint='"Comment..."'
+                android:inputType="textPersonName"
+                android:textAlignment="center" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_weight="1" />
 
             <Button
-                android:id="@+id/btnadd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Add" />
-
-            <TextView
-                android:id="@+id/expenseoutput"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAlignment="center"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <EditText
-            android:id="@+id/com"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint='"Comment..."'
-            android:inputType="textPersonName"
-            android:textAlignment="center" />
-
-        <Button
-            android:id="@+id/btnconfirm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingBottom="12dp"
-            android:paddingTop="12dp"
-            android:text="Confirm" />
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:paddingBottom="12dp"
-            android:paddingTop="12dp">
-
-            <TableLayout
-                android:id="@+id/entries"
+                android:id="@+id/btnconfirm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Confirm" />
 
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:stretchColumns="0,1,2,3,4"
-                android:shrinkColumns="5">
+            <View
+                style="@style/Divider"
+                android:layout_height="2dp"
+                android:background="@android:color/black" />
 
-                <TableRow
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:layout_weight="1" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="invisible">
+
+                <TableLayout
+                    android:id="@+id/entries"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
 
-                    <TextView
-                        android:id="@+id/textView5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Quantity"
-                        android:textAlignment="center"
-                        android:textStyle="bold" />
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:shrinkColumns="4"
+                    android:stretchColumns="0,1,2,3">
 
-                    <TextView
-                        android:id="@+id/textView6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Expense"
-                        android:textAlignment="center"
-                        android:textStyle="bold" />
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Subtotal"
-                        android:textAlignment="center"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/textView5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Quantity"
+                            android:textAlignment="center"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Category"
-                        android:textAlignment="center"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/textView6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Expense"
+                            android:textAlignment="center"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Comment"
-                        android:textAlignment="center"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Category"
+                            android:textAlignment="center"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:textStyle="bold" />
-                </TableRow>
-            </TableLayout>
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Comment"
+                            android:textAlignment="center"
+                            android:textStyle="bold" />
 
-        </ScrollView>
+                        <Button
+                            android:id="@+id/button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Button"
+                            android:visibility="invisible" />
 
-        <TextView
-            android:id="@+id/total"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingBottom="12dp"
-            android:paddingTop="24dp"
-            android:paddingVertical="0dp"
-            android:text="Total"
-            android:textAlignment="center"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="12dp"
+                            android:textAlignment="center"
+                            android:textStyle="bold" />
+                    </TableRow>
 
-        <Button
-            android:id="@+id/btnenter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingTop="12dp"
-            android:text="@string/enter" />
+                    <View
+                        style="@style/Divider"
+                        android:background="@android:color/black" />
+                </TableLayout>
 
-    </LinearLayout>
+            </ScrollView>
+
+            <View
+                android:id="@+id/blackline1"
+                style="@style/Divider"
+                android:layout_height="2dp"
+                android:background="@android:color/black"
+                android:visibility="invisible" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/total"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingVertical="0dp"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:visibility="invisible" />
+
+            <View
+                android:id="@+id/blackline2"
+                style="@style/Divider"
+                android:layout_height="2dp"
+                android:background="@android:color/black"
+                android:visibility="invisible" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnenter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/enter"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+    </ScrollView>
+
 </android.support.constraint.ConstraintLayout>
