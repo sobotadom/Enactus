@@ -14,28 +14,161 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/spent"
+        <Space
             android:layout_width="match_parent"
-            android:layout_height="53dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Total Spent: $0"
-            android:textAlignment="center"
-            android:textSize="30sp"
-            android:textStyle="italic"
-            android:typeface="normal"
-            app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="48dp" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <View
+                style="@style/Divider"
+                android:layout_height="2dp"
+                android:background="@android:color/black" />
+            <LinearLayout
+                android:id="@+id/cat1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cat1"
+                    android:textAlignment="center" />
+
+                <EditText
+                    android:id="@+id/cat1Expense"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="__________"
+                    android:inputType="numberDecimal"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/cat1date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Set Goal"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+            <View
+                style="@style/Divider"
+                android:layout_height="2dp"
+                android:background="@android:color/black" />
+            <LinearLayout
+                android:id="@+id/cat2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cat2"
+                    android:textAlignment="center" />
+
+                <EditText
+                    android:id="@+id/cat2Expense"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="__________"
+                    android:inputType="numberDecimal"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/cat2date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Set Goal"
+                    android:textAlignment="center" />
+            </LinearLayout>
+            <View
+                style="@style/Divider"
+                android:layout_height="2dp"
+                android:background="@android:color/black" />
+            <LinearLayout
+                android:id="@+id/cat3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cat3"
+                    android:textAlignment="center" />
+
+                <EditText
+                    android:id="@+id/cat3Expense"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="__________"
+                    android:inputType="numberDecimal"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/cat3date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Set Goal"
+                    android:textAlignment="center" />
+            </LinearLayout>
+            <View
+                style="@style/Divider"
+                android:layout_height="2dp"
+                android:background="@android:color/black" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="48dp" />
+
+        <View
+            style="@style/Divider"
+            android:layout_height="2dp"
+            android:background="@android:color/black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:id="@+id/tableSpin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+        <View
+            style="@style/Divider"
+            android:layout_height="2dp"
+            android:background="@android:color/black" />
         <ScrollView
             android:id="@+id/scrollView2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"

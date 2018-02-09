@@ -423,7 +423,7 @@ public class Expense  extends Activity{
                  *
                  *
                  */
-
+                finish();
 
             }
         });
