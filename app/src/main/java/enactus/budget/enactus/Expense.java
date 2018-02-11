@@ -12,8 +12,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,6 +30,7 @@ import android.widget.TableRow;
 import android.widget.Toast;
 
 import org.javatuples.Quintet;
+import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -251,24 +254,32 @@ public class Expense  extends Activity{
                     else{
                         TextView newCat = new TextView(btnconfirm.getContext());
                         newCat.setText(category);
+                        newCat.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        newCat.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+
 
                         //comment can be empty, so no validation needed
                         TextView newComment = new TextView(btnconfirm.getContext());
                         comment = commented.getText().toString();
                         newComment.setText(comment);
+                        newComment.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        newComment.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
 
 
                         //show number and expense
                         TextView txt = new TextView(btnconfirm.getContext());
                         txt.setText(Integer.toString(number));
+                        txt.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        txt.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
                         newEntry.addView(txt);
 
 
                         TextView txt2 = new TextView(btnconfirm.getContext());
                         txt2.setText("$ " + Double.toString(expense));
+                        txt2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        txt2.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
                         newEntry.addView(txt2);
-                        Log.i("EXPENSE",Double.toString(expense));
-                        Log.i("EXPENSE", Double.toString(subtotal));
+
                         //show subtotal
                         /*
                         TextView txt3 = new TextView(btnconfirm.getContext());
@@ -284,19 +295,21 @@ public class Expense  extends Activity{
                         newEntry.addView(newComment);
 
                         //set tag for index
-                        newEntry.setTag(finalindex);
-                        finalindex++;
+                        newEntry.setTag(tuples.size());
+                        //finalindex++;
 
-                        //show remove button
-                        final Button newremove = new Button(btnconfirm.getContext());
-                        newEntry.addView(newremove);
-                        newremove.setText("X");
-                        newremove.setOnClickListener(new View.OnClickListener() {
+
+                        newEntry.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(View v) {
-                                Log.i("REMOVE", "REMOVING ENTRY FROM LIST AND RESET");
+                            public void onClick(View view) {
 
-                                entries.removeView(newEntry);
+                                int index = entries.indexOfChild(view);
+                                entries.removeView(view);
+
+
+
+                                tuples.remove(index - 2);
+                                Log.i("REMOVING INDEX TUPLES", Integer.toString(index - 2));
 
                                 TextView temp = (TextView) newEntry.getChildAt(0);
                                 String str1 = temp.getText().toString();
@@ -310,37 +323,16 @@ public class Expense  extends Activity{
                                 expense = 0.0;
                                 subtotal = 0.0;
 
-
-
-                                /*
-                                TableRow parent =(TableRow) v.getParent();
-                                TableLayout table = findViewById(R.id.entries);
-                                int i = (int) parent.getTag();
-                                Log.i("INDEX",Integer.toString(i));
-
-                                /*for(i = i; i< finalindex; i++){
-                                    TableRow current = (TableRow) table.getChildAt(i);
-                                    current.setTag(i - 1);
-                                }
-
-                                tuples.remove(tuples.get(i));
-                                finalindex--;
-
-                                for(i=i;i< table.getChildCount();i++){
-                                    TableRow row = (TableRow) table.getChildAt(i);
-                                    row.setTag(i - 1);
-                                }
-
-
-                                //get the index of entry to remove it from the tuples list
-
-
                                 for(Quintet<Date,Double,Integer,String,String> q : tuples){
                                     Log.d("EFNA:FNAPGBNA:G", Double.toString(q.getValue1()));
                                 }
-                                */
+
+
                             }
                         });
+
+                        //show remove button
+
 
 
 
@@ -423,6 +415,11 @@ public class Expense  extends Activity{
                  *
                  *
                  */
+                for(Quintet<Date,Double,Integer, String, String> q : tuples){
+
+                    Log.i("FINAL TUPLES", q.getValue3() + " " + q.getValue4());
+                }
+
                 finish();
 
             }
