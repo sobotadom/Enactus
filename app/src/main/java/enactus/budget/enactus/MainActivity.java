@@ -31,6 +31,7 @@ import android.widget.TableRow;
 import org.w3c.dom.Text;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -223,26 +224,56 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        View.OnClickListener getdate = new View.OnClickListener() {
+        final View.OnClickListener getdate = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //show dialogan get the proper date
 
+                Date today = Calendar.getInstance().getTime();
 
+                DatePickerDialog start_time = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        Log.i("DATE", Integer.toString(i) + " " + Integer.toString(i1) + " " + Integer.toString(i2));
+                    }
+                }, today.getYear(), today.getMonth(), today.getDay());
 
                 switch(view.getId()){
 
-                    case R.id.btngoal1: break;
 
-                    case R.id.btngoal2: break;
 
-                    case R.id.btngoal3: break;
+
+
+                    case R.id.btngoal1:
+                        Log.i("GOAL1", "USER IS SETTING GOAL FOR FIXED EXPENSES");
+                        start_time.show();
+                        break;
+
+                    case R.id.btngoal2:
+                        Log.i("GOAL2", "USER IS SETTING GOAL FOR FLEXIBLE EXPENSES");
+                        start_time.show();
+                        break;
+
+                    case R.id.btngoal3:
+                        Log.i("GOAL3","USER IS SETTING GOAL FOR DISCRETIONARY");
+                        start_time.show();
+                        break;
                 }
 
 
 
             }
         };
+
+        Button btngoal1 = findViewById(R.id.btngoal1);
+        btngoal1.setOnClickListener(getdate);
+
+        Button btngoal2 = findViewById(R.id.btngoal2);
+        btngoal2.setOnClickListener(getdate);
+
+        Button btngoal3 = findViewById(R.id.btngoal3);
+        btngoal3.setOnClickListener(getdate);
+
 
 
     }

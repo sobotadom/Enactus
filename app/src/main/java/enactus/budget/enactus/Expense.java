@@ -252,11 +252,15 @@ public class Expense  extends Activity{
                 //SET GOAL IF A GOAL IS PUT IN
                 if(s.length() > 0){
                     double temp = Double.parseDouble(s.toString());
-                    if (temp > 0.01){
+                    if (temp >= 0.01){
                         isValidExpense = true;
                         expense = temp;
                         subtotal = Math.round(number * expense * 100.0) / 100.0;
                         expenseoutput.setText("$" + String.format("%.2f", subtotal));
+                    }
+                    else{
+                        expenseoutput.setText("");
+                        isValidExpense = false;
                     }
 
 
