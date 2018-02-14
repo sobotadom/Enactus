@@ -30,6 +30,7 @@ import android.widget.TableRow;
 
 import org.w3c.dom.Text;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -38,8 +39,11 @@ public class MainActivity extends AppCompatActivity {
     private static int REQUEST_CODE = 0;
     private double totalSpent = 0;
     private int cat1_day, cat2_day, cat3_day, cat1_month, cat2_month, cat3_month, cat1_year, cat2_year, cat3_year;
-    private double cat1_goal, cat2_goal, cat3_goal;
+    private double cat1_goal, cat2_goal, cat3_goal, cat1_remain, cat2_remain, cat3_remain;
     private String category;
+    private Date date_fixed, date_flexible, date_discretionary;
+    private TableRow before_set_cat1, before_set_cat2, before_set_cat3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        before_set_cat1 = findViewById(R.id.one);
+        before_set_cat2 = findViewById(R.id.two);
+        before_set_cat3 = findViewById(R.id.three);
+
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -229,14 +238,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //show dialogan get the proper date
 
-                Date today = Calendar.getInstance().getTime();
+                Calendar cal = Calendar.getInstance();
+                Date today = new Date(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+               // Log.i("CAL",Integer.toString(today.getDay()) + " " + cal.get(Calendar.DAY_OF_MONTH));
+                EditText cat1 = findViewById(R.id.cat1goal);
+                EditText cat2 = findViewById(R.id.cat2goal);
+                EditText cat3 = findViewById(R.id.cat3goal);
 
-                DatePickerDialog start_time = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                        Log.i("DATE", Integer.toString(i) + " " + Integer.toString(i1) + " " + Integer.toString(i2));
-                    }
-                }, today.getYear(), today.getMonth(), today.getDay());
 
                 switch(view.getId()){
 
@@ -244,19 +252,114 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                    case R.id.btngoal1:
+                    case R.id.btngoal1: //GOAL FOR FIXED
+
                         Log.i("GOAL1", "USER IS SETTING GOAL FOR FIXED EXPENSES");
+                        DatePickerDialog start_time = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+
+                                cat1_day = i2;
+                                cat1_month = i1;
+                                cat1_year = i;
+
+
+                            }
+                        }, today.getYear(), today.getMonth(), cal.get(Calendar.DAY_OF_MONTH));
+                        start_time.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
                         start_time.show();
+//
+                        //keep old table row
+
+                        TableRow temp = findViewById(R.id.one);
+
+                        cat1_remain = Double.parseDouble(cat1.getText().toString());
+                        //SHOW NEW TABLE ROW WITH DAYS REMAINING
+
+                        final TableLayout tl = findViewById(R.id.goal_table);
+                        final TableRow tr = new TableRow(view.getContext());
+                        TextView temp1 = findViewById(R.id.txtfixed);
+                        temp1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        temp1.setTextSize(14);
+
+                        temp.removeView(temp1);
+
+                        tl.removeView(findViewById(R.id.one));
+
+
+                        tr.addView(temp1);
+
+                        TextView txt = new TextView(view.getContext());
+                        txt.setText("$" +  Double.toString(cat1_remain));
+                        txt.setTextColor(Color.GREEN);
+                        txt.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        txt.setTextSize(14);
+                        tr.addView(txt);
+
+
+
+                        //days remaining
+                        TextView txt2 = new TextView(view.getContext());
+
+
+                        cal.set(cat1_year,cat1_month,cat1_day);
+
+                        Log.i("REMAINING", Long.toString(cal.getTime().getTime()) +  " " + Long.toString(today.getTime()));
+
+                        long days_remaining_cat1 =  ((cal.getTime().getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                        txt2.setText(Long.toString(days_remaining_cat1));
+                        txt2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        txt2.setTextSize(14);
+
+                        tr.addView(txt2);
+
+
+
+                        /*
+                        Button endgoal = new Button(view.getContext());
+                        endgoal.setText("X");
+                        endgoal.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                tl.removeView(tr);
+                                tl.addView(before_set_cat1, 0);
+                            }
+                        });
+                        tr.addView(endgoal);
+                        */
+                        tl.addView(tr,0);
                         break;
 
-                    case R.id.btngoal2:
+                    case R.id.btngoal2://GOAL FOR FLEXIBLE
                         Log.i("GOAL2", "USER IS SETTING GOAL FOR FLEXIBLE EXPENSES");
-                        start_time.show();
+                        DatePickerDialog start_time2 = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                                date_flexible = new Date(i,i1,i2);
+
+                            }
+                        }, today.getYear(), today.getMonth(), cal.get(Calendar.DAY_OF_MONTH));
+                        start_time2.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
+
+
+                        start_time2.show();
                         break;
 
-                    case R.id.btngoal3:
+                    case R.id.btngoal3: //GOAL FOR DISCRETIONARY
                         Log.i("GOAL3","USER IS SETTING GOAL FOR DISCRETIONARY");
-                        start_time.show();
+
+                        DatePickerDialog start_time3 = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                                date_discretionary = new Date(i,i1,i2);
+
+                            }
+                        }, today.getYear(), today.getMonth(), cal.get(Calendar.DAY_OF_MONTH));
+                        start_time3.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                        start_time3.show();
+
                         break;
                 }
 
