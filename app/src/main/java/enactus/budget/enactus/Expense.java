@@ -73,9 +73,9 @@ public class Expense  extends Activity{
 
         final String[] categories = new String[]{
                 "Category",
-                "Cat1",
-                "Cat2",
-                "Cat3"
+                "Fixed",
+                "Flexible",
+                "Discretionary"
 
         };
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -161,7 +161,7 @@ public class Expense  extends Activity{
 
 
         //get expense value
-        Button btnadd = findViewById(R.id.btnadd);
+        //Button btnadd = findViewById(R.id.btnadd);
         final Button btnconfirm = findViewById(R.id.btnconfirm);
         final Button btnenter = findViewById(R.id.btnenter);
         final TextView expenseoutput = findViewById(R.id.expenseoutput);
@@ -176,18 +176,15 @@ public class Expense  extends Activity{
          *
          * Im planning on replacing this button with just an edit text text change listener but thats just cosmetic
          */
+
+        /*
         btnadd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
                 //number validation
-                if( num.getText().toString().equals("")){
-                    number = 1;
-                }
-                else{
-                    number = Integer.parseInt(num.getText().toString());
-                }
+
 
                 //expense validation, minumum one cent
                 String temp = expenseinput.getText().toString();
@@ -220,9 +217,88 @@ public class Expense  extends Activity{
 
 
             }
+        }); */
+
+
+        expenseinput.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+
+
+
+
+                if( num.getText().toString().equals("")){
+                    number = 1;
+                }
+                else{
+                    number = Integer.parseInt(num.getText().toString());
+                }
+
+
+                if(s.length() == 0){
+                    expenseoutput.setText("");
+                    isValidExpense = false;
+                }
+                //SET GOAL IF A GOAL IS PUT IN
+                if(s.length() > 0){
+                    double temp = Double.parseDouble(s.toString());
+                    if (temp > 0.01){
+                        isValidExpense = true;
+                        expense = temp;
+                        subtotal = Math.round(number * expense * 100.0) / 100.0;
+                        expenseoutput.setText("$" + String.format("%.2f", subtotal));
+                    }
+
+
+                }
+
+
+            }
         });
+        num.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
 
 
+                if(s.length() == 0){
+                    number = 1;
+                }
+                if(s.length() > 0){
+                    number = Integer.parseInt(s.toString());
+                }
+
+                if(isValidExpense){
+                    subtotal = Math.round(number * expense * 100.0) / 100.0;
+                    expenseoutput.setText("$" + String.format("%.2f", subtotal));
+                }
+
+
+
+
+
+
+            }
+        });
         //Enter expense into tuples and reset expense
         btnconfirm.setOnClickListener(new View.OnClickListener() {
             @Override

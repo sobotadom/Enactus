@@ -18,29 +18,23 @@
             android:layout_width="match_parent"
             android:layout_height="48dp" />
 
-        <LinearLayout
+        <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <View
-                style="@style/Divider"
-                android:layout_height="2dp"
-                android:background="@android:color/black" />
-            <LinearLayout
-                android:id="@+id/cat1"
+            android:layout_height="wrap_content">
+
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="match_parent">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Cat1"
+                    android:text="Fixed"
                     android:textAlignment="center" />
 
                 <EditText
-                    android:id="@+id/cat1Expense"
+                    android:id="@+id/cat1goal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -49,35 +43,29 @@
                     android:inputType="numberDecimal"
                     android:textAlignment="center" />
 
-                <TextView
-                    android:id="@+id/cat1date"
+                <Button
+                    android:id="@+id/btngoal1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Set Goal"
-                    android:textAlignment="center" />
+                    android:text="Set Date"
+                    android:visibility="invisible" />
+            </TableRow>
 
-            </LinearLayout>
-            <View
-                style="@style/Divider"
-                android:layout_height="2dp"
-                android:background="@android:color/black" />
-            <LinearLayout
-                android:id="@+id/cat2"
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="match_parent">
 
                 <TextView
                     android:id="@+id/textView8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Cat2"
+                    android:text="Flexible"
                     android:textAlignment="center" />
 
                 <EditText
-                    android:id="@+id/cat2Expense"
+                    android:id="@+id/cat2goal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -86,34 +74,29 @@
                     android:inputType="numberDecimal"
                     android:textAlignment="center" />
 
-                <TextView
-                    android:id="@+id/cat2date"
+                <Button
+                    android:id="@+id/btngoal2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Set Goal"
-                    android:textAlignment="center" />
-            </LinearLayout>
-            <View
-                style="@style/Divider"
-                android:layout_height="2dp"
-                android:background="@android:color/black" />
-            <LinearLayout
-                android:id="@+id/cat3"
+                    android:text="Set Date"
+                    android:visibility="invisible" />
+            </TableRow>
+
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="match_parent">
 
                 <TextView
                     android:id="@+id/textView9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Cat3"
+                    android:text="Discretionary"
                     android:textAlignment="center" />
 
                 <EditText
-                    android:id="@+id/cat3Expense"
+                    android:id="@+id/cat3goal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -122,19 +105,16 @@
                     android:inputType="numberDecimal"
                     android:textAlignment="center" />
 
-                <TextView
-                    android:id="@+id/cat3date"
+                <Button
+                    android:id="@+id/btngoal3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Set Goal"
-                    android:textAlignment="center" />
-            </LinearLayout>
-            <View
-                style="@style/Divider"
-                android:layout_height="2dp"
-                android:background="@android:color/black" />
-        </LinearLayout>
+                    android:text="Set Date"
+                    android:visibility="invisible" />
+            </TableRow>
+
+        </TableLayout>
 
         <Space
             android:layout_width="match_parent"

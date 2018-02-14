@@ -10,6 +10,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private static int REQUEST_CODE = 0;
     private double totalSpent = 0;
     private int cat1_day, cat2_day, cat3_day, cat1_month, cat2_month, cat3_month, cat1_year, cat2_year, cat3_year;
+    private double cat1_goal, cat2_goal, cat3_goal;
     private String category;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,45 +58,39 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
-
         //CONFIGURE TABLE DISPLAYING DATABASE ENTRIES
 
         final TableLayout tl = findViewById(R.id.tableLayout);
 
         final String[] categories = new String[]{
-                "Sort By",
-                "Cat1",
-                "Cat2",
-                "Cat3"
+                "Sort By:",
+                "Fixed",
+                "Flexible",
+                "Discretionary"
 
         };
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,R.layout.spinner_item,categories){
+                this, R.layout.spinner_item, categories) {
             @Override
-            public boolean isEnabled(int position){
-                if(position == 0)
-                {
+            public boolean isEnabled(int position) {
+                if (position == 0) {
                     // Disable the first item from Spinner
                     // First item will be use for hint
                     return false;
-                }
-                else
-                {
+                } else {
                     return true;
                 }
             }
+
             @Override
             public View getDropDownView(int position, View convertView,
                                         ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
-                if(position == 0){
+                if (position == 0) {
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
-                }
-                else {
+                } else {
                     tv.setTextColor(Color.BLACK);
                 }
                 return view;
@@ -116,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 String selectedItemText = (String) parent.getItemAtPosition(position);
                 // If user change the default selection
                 // First item is disable and it is used for hint
-                if(position > 0){
+                if (position > 0) {
                     // Notify the selected item text
 
                 }
@@ -136,19 +133,119 @@ public class MainActivity extends AppCompatActivity {
         Configure balance and goals
 
          */
-        TextView btnfirst = findViewById(R.id.cat1date);
-        TextView btnsecond = findViewById(R.id.cat2date);
-        TextView btnthird = findViewById(R.id.cat3date);
+
+
+        EditText first = findViewById(R.id.cat1goal);
+        first.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+
+
+                if (s.length() == 0) {
+                    findViewById(R.id.btngoal1).setVisibility(View.INVISIBLE);
+                }
+                //SET GOAL IF A GOAL IS PUT IN
+                if (s.length() > 0) {
+                    cat1_goal = Double.parseDouble(s.toString());
+                    findViewById(R.id.btngoal1).setVisibility(View.VISIBLE);
+                }
+
+
+            }
+        });
+
+        final EditText second = findViewById(R.id.cat2goal);
+        second.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+
+                //SET GOAL IF A GOAL IS PUT IN
+                if (s.length() == 0) {
+                    findViewById(R.id.btngoal2).setVisibility(View.INVISIBLE);
+                }
+                if (s.length() > 0) {
+                    cat2_goal = Double.parseDouble(s.toString());
+                    findViewById(R.id.btngoal2).setVisibility(View.VISIBLE);
+                }
+
+
+            }
+        });
+        EditText third = findViewById(R.id.cat3goal);
+        third.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+
+
+                if (s.length() == 0) {
+                    findViewById(R.id.btngoal3).setVisibility(View.INVISIBLE);
+                }
+                //SET GOAL IF A GOAL IS PUT IN
+                if (s.length() > 0) {
+                    cat3_goal = Double.parseDouble(s.toString());
+                    findViewById(R.id.btngoal3).setVisibility(View.VISIBLE);
+                }
+
+
+            }
+        });
+
+        View.OnClickListener getdate = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //show dialogan get the proper date
 
 
 
+                switch(view.getId()){
+
+                    case R.id.btngoal1: break;
+
+                    case R.id.btngoal2: break;
+
+                    case R.id.btngoal3: break;
+                }
 
 
 
+            }
+        };
 
 
     }
-
 
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
