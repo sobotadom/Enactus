@@ -19,14 +19,17 @@
             android:layout_height="48dp" />
 
         <TableLayout
+            android:id="@+id/goal_table"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TableRow
+                android:id="@+id/one"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
+                    android:id="@+id/txtfixed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -53,11 +56,12 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/two"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/textView8"
+                    android:id="@+id/txtflexible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -84,11 +88,12 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/three"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/textView9"
+                    android:id="@+id/txtdisretionary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
