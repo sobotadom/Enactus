@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Calendar cal = Calendar.getInstance();
                 DateTime today = new DateTime(DateTimeZone.UTC);
-
+                Log.i("DATE", Integer.toString(today.getMonthOfYear()));
 
 
 
@@ -277,10 +277,14 @@ public class MainActivity extends AppCompatActivity {
 
 
                             }
-                        }, today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
+                        }, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
                         start_time.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
                         start_time.show();
+
+
+
+
 //
                         //keep old table row
 
@@ -353,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
                                 date_flexible = new Date(i,i1,i2);
 
                             }
-                        }, today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
+                        }, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
                         start_time2.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
 
@@ -370,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
                                 date_discretionary = new Date(i,i1,i2);
 
                             }
-                        }, today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
+                        }, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
                         start_time3.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                         start_time3.show();
 
