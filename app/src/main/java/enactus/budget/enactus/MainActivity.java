@@ -28,6 +28,10 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TableRow;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.w3c.dom.Text;
 
 import java.time.LocalDate;
@@ -51,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+
+        JodaTimeAndroid.init(this);
+
 
         before_set_cat1 = findViewById(R.id.one);
         before_set_cat2 = findViewById(R.id.two);
@@ -239,7 +247,11 @@ public class MainActivity extends AppCompatActivity {
                 //show dialogan get the proper date
 
                 Calendar cal = Calendar.getInstance();
-                Date today = new Date(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+                DateTime today = new DateTime(DateTimeZone.UTC);
+
+
+
+
                // Log.i("CAL",Integer.toString(today.getDay()) + " " + cal.get(Calendar.DAY_OF_MONTH));
                 EditText cat1 = findViewById(R.id.cat1goal);
                 EditText cat2 = findViewById(R.id.cat2goal);
@@ -265,13 +277,14 @@ public class MainActivity extends AppCompatActivity {
 
 
                             }
-                        }, today.getYear(), today.getMonth(), cal.get(Calendar.DAY_OF_MONTH));
+                        }, today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
                         start_time.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
                         start_time.show();
 //
                         //keep old table row
 
+                        /*
                         TableRow temp = findViewById(R.id.one);
 
                         cat1_remain = Double.parseDouble(cat1.getText().toString());
@@ -328,7 +341,8 @@ public class MainActivity extends AppCompatActivity {
                         });
                         tr.addView(endgoal);
                         */
-                        tl.addView(tr,0);
+
+                       // tl.addView(tr,0);
                         break;
 
                     case R.id.btngoal2://GOAL FOR FLEXIBLE
@@ -339,7 +353,7 @@ public class MainActivity extends AppCompatActivity {
                                 date_flexible = new Date(i,i1,i2);
 
                             }
-                        }, today.getYear(), today.getMonth(), cal.get(Calendar.DAY_OF_MONTH));
+                        }, today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
                         start_time2.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
 
@@ -356,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
                                 date_discretionary = new Date(i,i1,i2);
 
                             }
-                        }, today.getYear(), today.getMonth(), cal.get(Calendar.DAY_OF_MONTH));
+                        }, today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
                         start_time3.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                         start_time3.show();
 
