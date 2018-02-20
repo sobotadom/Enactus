@@ -64,6 +64,10 @@ public class Expense  extends Activity{
         category = "Category";
         isValidExpense = false;
 
+        //CREATE/LOAD Database ETDB
+        final ENTDB dataBase=ENTDB.getENTDB(getApplicationContext());
+
+
 
         /**
          *      Configure drop down menu for categories
@@ -332,6 +336,8 @@ public class Expense  extends Activity{
                         alert11.show();
                     }
                     else{
+                        findViewById(R.id.del).setVisibility(View.VISIBLE);
+
                         TextView newCat = new TextView(btnconfirm.getContext());
                         newCat.setText(category);
                         newCat.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -488,20 +494,44 @@ public class Expense  extends Activity{
             @Override
             public void onClick(View v) {
 
-                /***
-                 *
-                 *
-                 * HERE IS WHERE THE USER WILL CONFIRM THEIR ENTRIES, FROM HERE YOU CAN UPDATE THE DATABASE
-                 *
-                 *
-                 */
-                for(Quintet<Date,Double,Integer, String, String> q : tuples){
+                for(Quintet<Date,Double,Integer, String, String> q : tuples) {
+
+                    /*
+                    Adding entry into DATABASE, make sure date is String
+                    cannot put object types into Room databases
+
+
+                    newExp.setCost(double cost);
+                    newExp.setQuantity(int quantity);
+                    newExp.setComment(String comment);
+                    newExp.setDate(String date);
+                    newExp.setCategory(String category);
+
+
+
+                     */
+                    EXPTBL newExp = new EXPTBL();
+                    //After setting all values into this EXPTBL can add it to database
+                    //through the data access object interface
+                    //make sure newExp has correct values stored in correct places
+
+
+                    newExp.setCost(q.getValue1());
+                    newExp.setQuantity(q.getValue2());
+                    newExp.setComment(q.getValue3());
+
+                    //date cannot be type Date
+
+                    newExp.setDate(q.getValue0().toString());
+                    newExp.setCategory(q.getValue4());
+
+                    //add expense tuple(type EXPTBL) into database
+                    dataBase.expDAO().insertExpenses(newExp);
+
 
                     Log.i("FINAL TUPLES", q.getValue3() + " " + q.getValue4());
+                    finish();
                 }
-
-                finish();
-
             }
         });
 

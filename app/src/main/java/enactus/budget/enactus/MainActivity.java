@@ -32,20 +32,23 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Days;
 import org.w3c.dom.Text;
 
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static int REQUEST_CODE = 0;
     private double totalSpent = 0;
-    private int cat1_day, cat2_day, cat3_day, cat1_month, cat2_month, cat3_month, cat1_year, cat2_year, cat3_year;
+    private int fixed_days, flexible_days, discretionary_days;
     private double cat1_goal, cat2_goal, cat3_goal, cat1_remain, cat2_remain, cat3_remain;
     private String category;
-    private Date date_fixed, date_flexible, date_discretionary;
+    private DateTime date_fixed, date_flexible, date_discretionary;
     private TableRow before_set_cat1, before_set_cat2, before_set_cat3;
 
     @Override
@@ -64,6 +67,31 @@ public class MainActivity extends AppCompatActivity {
         before_set_cat2 = findViewById(R.id.two);
         before_set_cat3 = findViewById(R.id.three);
 
+           /*
+
+        BAD DESIGN, SHOULD BE CREATED INTO A INITIALIZATION CLASS/METHOD AND
+        SHOULD ONLY BE CALLED THROUGH METHODS
+        SHOULD NOT ALLOW MAIN THREAD QUERIES
+
+
+
+         */
+        //CREATE/LOAD Database ENTDB
+        final ENTDB dataBase=ENTDB.getENTDB(getApplicationContext());
+
+
+
+        //GET TUPLES FROM DATABASE
+        List<EXPTBL> expenses=dataBase.expDAO().getAllExpenses();
+
+        //Use iterator to go through list easily to list all elements
+        Iterator<EXPTBL> expensesIterator=expenses.iterator();
+
+        while(expensesIterator.hasNext()){
+            String expenseOut=expensesIterator.next().toString();
+            Log.d("Database search:  ",expenseOut);
+
+        }
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -266,87 +294,34 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.btngoal1: //GOAL FOR FIXED
 
+
                         Log.i("GOAL1", "USER IS SETTING GOAL FOR FIXED EXPENSES");
                         DatePickerDialog start_time = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
 
-                                cat1_day = i2;
-                                cat1_month = i1;
-                                cat1_year = i;
+                                EditText ed = findViewById(R.id.cat1goal);
+                                cat1_goal = Double.parseDouble(ed.getText().toString());
+
+                                inputGoal(i,i1,i2, R.id.btngoal1);
+                                Button btn = findViewById(R.id.btngoal1);
+                                btn.setEnabled(false);
+                                btn.setText(Integer.toString(fixed_days));
+                                ed.setVisibility(View.GONE);
+
+                                TextView txt = findViewById(R.id.txtgoal1);
+                                txt.setVisibility(View.VISIBLE);
+                                txt.setText(Double.toString(cat1_goal));
+
 
 
                             }
                         }, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
-                        start_time.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                        start_time.getDatePicker().setMinDate(System.currentTimeMillis() + 86400000);
 
                         start_time.show();
 
 
-
-
-//
-                        //keep old table row
-
-                        /*
-                        TableRow temp = findViewById(R.id.one);
-
-                        cat1_remain = Double.parseDouble(cat1.getText().toString());
-                        //SHOW NEW TABLE ROW WITH DAYS REMAINING
-
-                        final TableLayout tl = findViewById(R.id.goal_table);
-                        final TableRow tr = new TableRow(view.getContext());
-                        TextView temp1 = findViewById(R.id.txtfixed);
-                        temp1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                        temp1.setTextSize(14);
-
-                        temp.removeView(temp1);
-
-                        tl.removeView(findViewById(R.id.one));
-
-
-                        tr.addView(temp1);
-
-                        TextView txt = new TextView(view.getContext());
-                        txt.setText("$" +  Double.toString(cat1_remain));
-                        txt.setTextColor(Color.GREEN);
-                        txt.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                        txt.setTextSize(14);
-                        tr.addView(txt);
-
-
-
-                        //days remaining
-                        TextView txt2 = new TextView(view.getContext());
-
-
-                        cal.set(cat1_year,cat1_month,cat1_day);
-
-                        Log.i("REMAINING", Long.toString(cal.getTime().getTime()) +  " " + Long.toString(today.getTime()));
-
-                        long days_remaining_cat1 =  ((cal.getTime().getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-                        txt2.setText(Long.toString(days_remaining_cat1));
-                        txt2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                        txt2.setTextSize(14);
-
-                        tr.addView(txt2);
-
-
-
-                        /*
-                        Button endgoal = new Button(view.getContext());
-                        endgoal.setText("X");
-                        endgoal.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                tl.removeView(tr);
-                                tl.addView(before_set_cat1, 0);
-                            }
-                        });
-                        tr.addView(endgoal);
-                        */
-
-                       // tl.addView(tr,0);
                         break;
 
                     case R.id.btngoal2://GOAL FOR FLEXIBLE
@@ -354,11 +329,23 @@ public class MainActivity extends AppCompatActivity {
                         DatePickerDialog start_time2 = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                                date_flexible = new Date(i,i1,i2);
+                                EditText ed = findViewById(R.id.cat2goal);
+                                cat2_goal = Double.parseDouble(ed.getText().toString());
+
+                                inputGoal(i,i1,i2, R.id.btngoal2);
+                                Button btn = findViewById(R.id.btngoal2);
+                                btn.setEnabled(false);
+                                btn.setText(Integer.toString(flexible_days));
+
+                                ed.setVisibility(View.GONE);
+
+                                TextView txt = findViewById(R.id.txtgoal2);
+                                txt.setVisibility(View.VISIBLE);
+                                txt.setText(Double.toString(cat2_goal));
 
                             }
                         }, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
-                        start_time2.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                        start_time2.getDatePicker().setMinDate(System.currentTimeMillis() + 86400000 );
 
 
 
@@ -371,11 +358,24 @@ public class MainActivity extends AppCompatActivity {
                         DatePickerDialog start_time3 = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                                date_discretionary = new Date(i,i1,i2);
+                                EditText ed = findViewById(R.id.cat3goal);
+                                cat3_goal = Double.parseDouble(ed.getText().toString());
+
+                                inputGoal(i,i1,i2, R.id.btngoal3);
+                                Button btn = findViewById(R.id.btngoal3);
+                                btn.setEnabled(false);
+                                btn.setText(Integer.toString(discretionary_days));
+
+                                ed.setVisibility(View.GONE);
+
+                                TextView txt = findViewById(R.id.txtgoal3);
+                                txt.setVisibility(View.VISIBLE);
+                                txt.setText(Double.toString(cat3_goal));
+
 
                             }
                         }, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
-                        start_time3.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                        start_time3.getDatePicker().setMinDate(System.currentTimeMillis() + 86400000);
                         start_time3.show();
 
                         break;
@@ -398,7 +398,32 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    private void inputGoal(int y, int m, int d, int id){
+        DateTime today = new DateTime(DateTimeZone.UTC);
+        switch(id){
+            case R.id.btngoal1:
+                date_fixed = new DateTime(y,m + 1,d,0,0);
+                fixed_days = Days.daysBetween(today.withTimeAtStartOfDay(), date_fixed.withTimeAtStartOfDay()).getDays();
+                break;
+            case R.id.btngoal2:
+                date_flexible = new DateTime(y,m + 1,d,0,0);
+                flexible_days = Days.daysBetween(today.withTimeAtStartOfDay(), date_flexible.withTimeAtStartOfDay()).getDays();
+                break;
+            case R.id.btngoal3:
+                date_discretionary = new DateTime(y,m + 1,d,0,0);
+                discretionary_days = Days.daysBetween(today.withTimeAtStartOfDay(), date_discretionary.withTimeAtStartOfDay()).getDays();
+                break;
+        }
 
+
+
+
+
+
+
+
+
+    }
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
 
