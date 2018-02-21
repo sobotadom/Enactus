@@ -30,6 +30,8 @@ import android.widget.TableRow;
 import android.widget.Toast;
 
 import org.javatuples.Quintet;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Text;
 
@@ -45,7 +47,7 @@ public class Expense  extends Activity{
     private double taxRate = 1.13;
     private String expenseStr, category, comment;
     private double subtotal, expense , total;
-    private ArrayList<Quintet<Date,Double,Integer,String,String>> tuples;
+    private ArrayList<Quintet<DateTime,Double,Integer,String,String>> tuples;
 
     private int number, finalindex;
     private boolean isValidExpense;
@@ -409,9 +411,7 @@ public class Expense  extends Activity{
                                 expense = 0.0;
                                 subtotal = 0.0;
 
-                                for(Quintet<Date,Double,Integer,String,String> q : tuples){
-                                    Log.d("EFNA:FNAPGBNA:G", Double.toString(q.getValue1()));
-                                }
+
 
 
                             }
@@ -438,8 +438,8 @@ public class Expense  extends Activity{
                          *
                          *
                          */
-                        Date currentDay = Calendar.getInstance().getTime();
-                        Quintet<Date, Double, Integer, String, String> tuple = new Quintet<>(currentDay,expense,number,category,comment);
+                        DateTime currentDay = new DateTime(DateTimeZone.UTC);
+                        Quintet<DateTime, Double, Integer, String, String> tuple = new Quintet<>(currentDay,expense,number,category,comment);
                         tuples.add(tuple);
 
 
@@ -494,7 +494,7 @@ public class Expense  extends Activity{
             @Override
             public void onClick(View v) {
 
-                for(Quintet<Date,Double,Integer, String, String> q : tuples) {
+                for(Quintet<DateTime,Double,Integer, String, String> q : tuples) {
 
                     /*
                     Adding entry into DATABASE, make sure date is String
@@ -510,6 +510,8 @@ public class Expense  extends Activity{
 
 
                      */
+
+
                     EXPTBL newExp = new EXPTBL();
                     //After setting all values into this EXPTBL can add it to database
                     //through the data access object interface
@@ -518,18 +520,20 @@ public class Expense  extends Activity{
 
                     newExp.setCost(q.getValue1());
                     newExp.setQuantity(q.getValue2());
-                    newExp.setComment(q.getValue3());
+                    newExp.setComment(q.getValue4());
 
                     //date cannot be type Date
+                    //convert date to string
+                    String s = q.getValue0().getYear() + "-" + q.getValue0().getMonthOfYear() + "-" + q.getValue0().getDayOfMonth();
 
-                    newExp.setDate(q.getValue0().toString());
-                    newExp.setCategory(q.getValue4());
+                    newExp.setDate(s);
+                    newExp.setCategory(q.getValue3());
 
                     //add expense tuple(type EXPTBL) into database
                     dataBase.expDAO().insertExpenses(newExp);
 
 
-                    Log.i("FINAL TUPLES", q.getValue3() + " " + q.getValue4());
+                    setResult(RESULT_OK, null);
                     finish();
                 }
             }

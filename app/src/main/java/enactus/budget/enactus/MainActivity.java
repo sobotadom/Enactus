@@ -45,11 +45,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static int REQUEST_CODE = 0;
     private double totalSpent = 0;
-    private int fixed_days, flexible_days, discretionary_days;
-    private double cat1_goal, cat2_goal, cat3_goal, cat1_remain, cat2_remain, cat3_remain;
+    private int fixed_days, flexible_days, discretionary_days, sort_by;
+    private double cat1_goal, cat2_goal, cat3_goal;
     private String category;
     private DateTime date_fixed, date_flexible, date_discretionary;
-    private TableRow before_set_cat1, before_set_cat2, before_set_cat3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,36 +62,12 @@ public class MainActivity extends AppCompatActivity {
 
         JodaTimeAndroid.init(this);
 
-
-        before_set_cat1 = findViewById(R.id.one);
-        before_set_cat2 = findViewById(R.id.two);
-        before_set_cat3 = findViewById(R.id.three);
-
-           /*
-
-        BAD DESIGN, SHOULD BE CREATED INTO A INITIALIZATION CLASS/METHOD AND
-        SHOULD ONLY BE CALLED THROUGH METHODS
-        SHOULD NOT ALLOW MAIN THREAD QUERIES
+        //UPDATE DATABASE
+        //updateTable();
+        deleteAll();
 
 
 
-         */
-        //CREATE/LOAD Database ENTDB
-        final ENTDB dataBase=ENTDB.getENTDB(getApplicationContext());
-
-
-
-        //GET TUPLES FROM DATABASE
-        List<EXPTBL> expenses=dataBase.expDAO().getAllExpenses();
-
-        //Use iterator to go through list easily to list all elements
-        Iterator<EXPTBL> expensesIterator=expenses.iterator();
-
-        while(expensesIterator.hasNext()){
-            String expenseOut=expensesIterator.next().toString();
-            Log.d("Database search:  ",expenseOut);
-
-        }
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -109,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         final TableLayout tl = findViewById(R.id.tableLayout);
 
         final String[] categories = new String[]{
-                "Sort By:",
+                "All",
                 "Fixed",
                 "Flexible",
                 "Discretionary"
@@ -119,26 +95,23 @@ public class MainActivity extends AppCompatActivity {
                 this, R.layout.spinner_item, categories) {
             @Override
             public boolean isEnabled(int position) {
-                if (position == 0) {
-                    // Disable the first item from Spinner
-                    // First item will be use for hint
-                    return false;
-                } else {
+
                     return true;
-                }
             }
+
 
             @Override
             public View getDropDownView(int position, View convertView,
                                         ViewGroup parent) {
+
                 View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
+                /*TextView tv = (TextView) view;
                 if (position == 0) {
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
                 } else {
                     tv.setTextColor(Color.BLACK);
-                }
+                }*/
                 return view;
             }
         };
@@ -157,12 +130,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItemText = (String) parent.getItemAtPosition(position);
-                // If user change the default selection
-                // First item is disable and it is used for hint
-                if (position > 0) {
-                    // Notify the selected item text
+                sort_by = position;
+                updateTable();
 
-                }
             }
 
             @Override
@@ -424,31 +394,102 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    private void updateGoals(){
+        Log.i("Main","Updating Goals with database ");
+    }
+    private void updateTable() {
+        Log.i("Main", "Updating table with database");
+        //CREATE/LOAD Database ENTDB
+        ENTDB dataBase = ENTDB.getENTDB(getApplicationContext());
+        List<EXPTBL> expenses = null;
+
+        //clear out table so we get no duplicates
+        TableLayout tl = findViewById(R.id.tableLayout);
+        TableRow header = findViewById(R.id.header);
+
+        Log.d("CUNT","HELO" +  Integer.toString(tl.getChildCount()));
+        tl.removeAllViews();
+        tl.addView(header);
+
+
+        if (sort_by == 0) {  //GETS ALL EXPENSES FROM DATABASE
+            //GET TUPLES FROM DATABASE
+            expenses = dataBase.expDAO().getAllExpenses();
+
+        } else if (sort_by == 1) {
+            expenses = dataBase.expDAO().getFixedExpenses();
+        } else if (sort_by == 2) {
+            expenses = dataBase.expDAO().getFlexibleExpenses();
+        } else if (sort_by == 3) {
+            expenses = dataBase.expDAO().getDiscretionaryExpenses();
+        } else {
+            Log.e("SPINNER", "Somehow someone selected a category not on the list");
+        }
+
+        //Use iterator to go through list easily to list all elements
+        Iterator<EXPTBL> expensesIterator = expenses.iterator();
+
+        while (expensesIterator.hasNext()) {
+            TableRow tr = new TableRow(this);
+
+            EXPTBL current = expensesIterator.next();
+            String expenseOut = current.toString();
+            Log.i("Inputting into Table:  ", "HELLO " + current.getCategory());
+
+
+
+            //cost
+            TextView cost = new TextView(this);
+            cost.setText(Double.toString(current.getCost()));
+            cost.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(cost);
+
+            //quantity
+            TextView quantity = new TextView(this);
+            quantity.setText(Double.toString(current.getQuantity()));
+            quantity.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(quantity);
+
+            //category
+            TextView cat = new TextView(this);
+            cat.setText(current.getCategory());
+            cat.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(cat);
+
+            //comment
+            TextView comment = new TextView(this);
+            comment.setText(current.getComment());
+            comment.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(comment);
+
+            //date
+            TextView date = new TextView(this);
+            date.setText(current.getDate());
+            date.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(date);
+
+            tl.addView(tr);
+
+        }
+    }
+    private void deleteAll(){
+        ENTDB dataBase=ENTDB.getENTDB(getApplicationContext());
+        dataBase.expDAO().deleteAllExpenses();
+    }
+
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
 
-        //GET result from entering expense, database entry
-       // TableRow tr = new TableRow(this);
-       // TableLayout tl = findViewById(R.id.tableLayout);
 
-      //  TextView category = new TextView(this);
-       // category.setText("Category");
-       // TextView cost = new TextView(this);
 
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                // A contact was picked.  Here we will just display it
-                // to the user.
+                //THIS IS WHERE WE UPDATE PAGE
+                updateGoals();
+                updateTable();
 
-                //Bundle b = data.getBundleExtra("EXPENSE");
-                //category.setText(b.getString("category"));
-                //cost.setText(b.getString("STR"));
 
-               // tr.addView(category);
-               // tr.addView(cost);
-               // tl.addView(tr);
 
-                //enterExpense(b.getDouble("Expense"));
             }
         }
     }

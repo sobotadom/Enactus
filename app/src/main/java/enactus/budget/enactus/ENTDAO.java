@@ -29,6 +29,13 @@ public interface ENTDAO {
     @Query("DELETE FROM expenses")
     void deleteAllExpenses();
 
+    @Query("SELECT * FROM expenses WHERE category=\"Fixed\" ")
+    List<EXPTBL> getFixedExpenses();
 
+    @Query("SELECT * FROM expenses WHERE category=\"Flexible\" ")
+    List<EXPTBL> getFlexibleExpenses();
+
+    @Query("SELECT * FROM expenses WHERE category=\"Discretionary\" ")
+    List<EXPTBL> getDiscretionaryExpenses();
 
 }
