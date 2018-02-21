@@ -659,7 +659,7 @@ public class MainActivity extends AppCompatActivity {
         dataBase.expDAO().deleteAllExpenses();
     }
 
-    
+
 
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
