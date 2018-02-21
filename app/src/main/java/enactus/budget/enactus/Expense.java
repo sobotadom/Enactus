@@ -533,9 +533,12 @@ public class Expense  extends Activity{
                     dataBase.expDAO().insertExpenses(newExp);
 
 
-                    setResult(RESULT_OK, null);
-                    finish();
+
+
+
                 }
+                setResult(RESULT_OK, null);
+                finish();
             }
         });
 

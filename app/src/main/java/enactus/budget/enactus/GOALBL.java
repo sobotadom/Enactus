@@ -33,6 +33,10 @@ public class GOALBL {
     @ColumnInfo(name="status")
     private String status;
 
+    //status of goal
+    @ColumnInfo(name="progress")
+    private double progress;
+
 
     //Getters and Setters for variables in table
 
@@ -82,6 +86,9 @@ public class GOALBL {
         this.status = comment;
     }
 
+    public double getProgress(){return progress;}
+    public void setProgress(double expense){this.progress = expense;}
+    public void addProgress(double expense){this.progress += expense;}
 
 
 

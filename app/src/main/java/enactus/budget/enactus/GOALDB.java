@@ -8,7 +8,7 @@ import android.content.Context;
 /**
  * Created by dmitry on 2/19/18.
  */
-@Database(entities={GOALBL.class},version = 1)
+@Database(entities={GOALBL.class},version = 2)
 public abstract class GOALDB extends RoomDatabase {
     private static GOALDB INSTANCE;
 
@@ -22,6 +22,7 @@ public abstract class GOALDB extends RoomDatabase {
 
             INSTANCE= Room.databaseBuilder(context.getApplicationContext(),GOALDB.class,"GOAL-DB")
                     .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
                     .build();
         }
         return INSTANCE;

@@ -38,4 +38,6 @@ public interface ENTDAO {
     @Query("SELECT * FROM expenses WHERE category=\"Discretionary\" ")
     List<EXPTBL> getDiscretionaryExpenses();
 
+
+
 }
