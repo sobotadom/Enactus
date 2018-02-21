@@ -33,6 +33,7 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
+import org.joda.time.format.DateTimeFormat;
 import org.w3c.dom.Text;
 
 import java.time.LocalDate;
@@ -45,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static int REQUEST_CODE = 0;
     private double totalSpent = 0;
-    private int fixed_days, flexible_days, discretionary_days, sort_by;
-    private double cat1_goal, cat2_goal, cat3_goal;
-    private String category;
-    private DateTime date_fixed, date_flexible, date_discretionary;
+    private int sort_by;
+    //private double cat1_goal, cat2_goal, cat3_goal;
+   // private String category;
+    //private DateTime date_fixed, date_flexible, date_discretionary;
 
 
     @Override
@@ -119,12 +120,6 @@ public class MainActivity extends AppCompatActivity {
         spin.setAdapter(adapter);
 
 
-        /***
-         *
-         * THIS IS WHERE WHERE THE DATABASE COMES IN !!!!!!!!!!!!!!!!!!!!
-         *
-         */
-
 
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -173,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //SET GOAL IF A GOAL IS PUT IN
                 if (s.length() > 0) {
-                    cat1_goal = Double.parseDouble(s.toString());
+                    //cat1_goal = Double.parseDouble(s.toString());
                     findViewById(R.id.btngoal1).setVisibility(View.VISIBLE);
                 }
 
@@ -202,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                     findViewById(R.id.btngoal2).setVisibility(View.INVISIBLE);
                 }
                 if (s.length() > 0) {
-                    cat2_goal = Double.parseDouble(s.toString());
+                    //cat2_goal = Double.parseDouble(s.toString());
                     findViewById(R.id.btngoal2).setVisibility(View.VISIBLE);
                 }
 
@@ -231,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //SET GOAL IF A GOAL IS PUT IN
                 if (s.length() > 0) {
-                    cat3_goal = Double.parseDouble(s.toString());
+                    //cat3_goal = Double.parseDouble(s.toString());
                     findViewById(R.id.btngoal3).setVisibility(View.VISIBLE);
                 }
 
@@ -249,49 +244,20 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("DATE", Integer.toString(today.getMonthOfYear()));
 
 
-
-               // Log.i("CAL",Integer.toString(today.getDay()) + " " + cal.get(Calendar.DAY_OF_MONTH));
-                EditText cat1 = findViewById(R.id.cat1goal);
-                EditText cat2 = findViewById(R.id.cat2goal);
-                EditText cat3 = findViewById(R.id.cat3goal);
-
-
                 switch(view.getId()){
 
-
-
-
-
                     case R.id.btngoal1: //GOAL FOR FIXED
-
 
                         Log.i("GOAL1", "USER IS SETTING GOAL FOR FIXED EXPENSES");
                         DatePickerDialog start_time = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-
-                                EditText ed = findViewById(R.id.cat1goal);
-                                cat1_goal = Double.parseDouble(ed.getText().toString());
-
                                 inputGoal(i,i1,i2, R.id.btngoal1);
-                                Button btn = findViewById(R.id.btngoal1);
-                                btn.setEnabled(false);
-                                btn.setText(Integer.toString(fixed_days));
-                                ed.setVisibility(View.GONE);
-
-                                TextView txt = findViewById(R.id.txtgoal1);
-                                txt.setVisibility(View.VISIBLE);
-                                txt.setText(Double.toString(cat1_goal));
-
-
-
                             }
                         }, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
                         start_time.getDatePicker().setMinDate(System.currentTimeMillis() + 86400000);
 
                         start_time.show();
-
-
                         break;
 
                     case R.id.btngoal2://GOAL FOR FLEXIBLE
@@ -299,26 +265,10 @@ public class MainActivity extends AppCompatActivity {
                         DatePickerDialog start_time2 = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                                EditText ed = findViewById(R.id.cat2goal);
-                                cat2_goal = Double.parseDouble(ed.getText().toString());
-
                                 inputGoal(i,i1,i2, R.id.btngoal2);
-                                Button btn = findViewById(R.id.btngoal2);
-                                btn.setEnabled(false);
-                                btn.setText(Integer.toString(flexible_days));
-
-                                ed.setVisibility(View.GONE);
-
-                                TextView txt = findViewById(R.id.txtgoal2);
-                                txt.setVisibility(View.VISIBLE);
-                                txt.setText(Double.toString(cat2_goal));
-
                             }
                         }, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
                         start_time2.getDatePicker().setMinDate(System.currentTimeMillis() + 86400000 );
-
-
-
                         start_time2.show();
                         break;
 
@@ -328,20 +278,7 @@ public class MainActivity extends AppCompatActivity {
                         DatePickerDialog start_time3 = new DatePickerDialog(view.getContext(), new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                                EditText ed = findViewById(R.id.cat3goal);
-                                cat3_goal = Double.parseDouble(ed.getText().toString());
-
                                 inputGoal(i,i1,i2, R.id.btngoal3);
-                                Button btn = findViewById(R.id.btngoal3);
-                                btn.setEnabled(false);
-                                btn.setText(Integer.toString(discretionary_days));
-
-                                ed.setVisibility(View.GONE);
-
-                                TextView txt = findViewById(R.id.txtgoal3);
-                                txt.setVisibility(View.VISIBLE);
-                                txt.setText(Double.toString(cat3_goal));
-
 
                             }
                         }, today.getYear(), today.getMonthOfYear() - 1, today.getDayOfMonth());
@@ -369,19 +306,94 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void inputGoal(int y, int m, int d, int id){
+
+        GOALDB dataBase = GOALDB.getGOALDB(getApplicationContext());
+        GOALBL newGoal = new GOALBL();
+        dataBase.goalDAO().deleteAllGoals();
         DateTime today = new DateTime(DateTimeZone.UTC);
+        String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
+
+
         switch(id){
             case R.id.btngoal1:
-                date_fixed = new DateTime(y,m + 1,d,0,0);
-                fixed_days = Days.daysBetween(today.withTimeAtStartOfDay(), date_fixed.withTimeAtStartOfDay()).getDays();
+                EditText ed = findViewById(R.id.cat1goal);
+                double cat1_goal = Double.parseDouble(ed.getText().toString());
+
+                DateTime date_fixed = new DateTime(y,m + 1,d,0,0);
+
+
+                //set goal
+                newGoal.setGoal(cat1_goal);
+
+                //set cat
+                newGoal.setCategory("Fixed");
+
+                //set start date
+
+                newGoal.setStart(s);
+
+                //set end date
+                String e = date_fixed.getYear() + "-" + date_fixed.getMonthOfYear() + "-" + date_fixed.getDayOfMonth();
+                newGoal.setEnd(e);
+
+                //set status
+                newGoal.setStatus("In Progress");
+
+
+                dataBase.goalDAO().insertGoal(newGoal);
+                updateGoal1();
+
                 break;
+
             case R.id.btngoal2:
-                date_flexible = new DateTime(y,m + 1,d,0,0);
-                flexible_days = Days.daysBetween(today.withTimeAtStartOfDay(), date_flexible.withTimeAtStartOfDay()).getDays();
+                EditText ed1 = findViewById(R.id.cat2goal);
+                DateTime date_flexible = new DateTime(y,m + 1,d,0,0);
+
+                double cat2_goal = Double.parseDouble(ed1.getText().toString());
+
+                //set goal
+                newGoal.setGoal(cat2_goal);
+
+                //set cat
+                newGoal.setCategory("Flexible");
+
+                //set start date
+               newGoal.setStart(s);
+
+                //set end date
+                String e1 = date_flexible.getYear() + "-" + date_flexible.getMonthOfYear() + "-" + date_flexible.getDayOfMonth();
+                newGoal.setEnd(e1);
+
+                //set status
+                newGoal.setStatus("In Progress");
+
+                dataBase.goalDAO().insertGoal(newGoal);
+                updateGoal2();
                 break;
             case R.id.btngoal3:
-                date_discretionary = new DateTime(y,m + 1,d,0,0);
-                discretionary_days = Days.daysBetween(today.withTimeAtStartOfDay(), date_discretionary.withTimeAtStartOfDay()).getDays();
+                EditText ed2 = findViewById(R.id.cat3goal);
+                DateTime date_discretionary = new DateTime(y,m + 1,d,0,0);
+
+                double cat3_goal = Double.parseDouble(ed2.getText().toString());
+
+                //set goal
+                newGoal.setGoal(cat3_goal);
+
+                //set cat
+                newGoal.setCategory("Discretionary");
+
+                //set start date
+
+                newGoal.setStart(s);
+
+                //set end date
+                String e2 = date_discretionary.getYear() + "-" + date_discretionary.getMonthOfYear() + "-" + date_discretionary.getDayOfMonth();
+                newGoal.setEnd(e2);
+
+                //set status
+                newGoal.setStatus("In Progress");
+                dataBase.goalDAO().insertGoal(newGoal);
+                updateGoal3();
                 break;
         }
 
@@ -393,10 +405,180 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     }
-    private void updateGoals(){
-        Log.i("Main","Updating Goals with database ");
+
+    private void updateGoal1(){
+        Log.i("Main","Updating Goal1 ");
+        GOALDB dataBase = GOALDB.getGOALDB(getApplicationContext());
+        List<GOALBL> list = dataBase.goalDAO().getCurrentFixedGoal();
+        Iterator<GOALBL> it = list.iterator();
+
+        GOALBL fixed = it.next();//should only be one goal in progress per category
+
+
+
+        DateTime start = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(fixed.getStart());
+        DateTime end = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(fixed.getEnd());
+        DateTime today = new DateTime(DateTimeZone.UTC);
+        String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
+
+
+        double goal = fixed.getGoal();
+        String category = fixed.getCategory();
+        String status = fixed.getStatus();
+
+
+
+
+
+        if(s.equals(end)){ //goal is complete, reset back
+
+            Button btn = findViewById(R.id.btngoal1);
+            btn.setEnabled(true);
+            btn.setText("Set Date");
+            findViewById(R.id.cat1goal).setVisibility(View.GONE);
+
+            TextView txt = findViewById(R.id.txtgoal1);
+            txt.setVisibility(View.GONE);
+            txt.setText("");
+
+            EditText ed = findViewById(R.id.cat1goal);
+            ed.setVisibility(View.VISIBLE);
+
+
+
+        }
+        else{ //goal is still going
+
+
+            Button btn = findViewById(R.id.btngoal1);
+            btn.setEnabled(false);
+            btn.setText(Integer.toString(Days.daysBetween(start,end).getDays()));
+            findViewById(R.id.cat1goal).setVisibility(View.GONE);
+
+            TextView txt = findViewById(R.id.txtgoal1);
+            txt.setVisibility(View.VISIBLE);
+            txt.setText(Double.toString(goal));
+        }
+
     }
+
+
+
+
+
+    private void updateGoal2(){
+        Log.i("Main","Updating Goal2 ");
+        GOALDB dataBase = GOALDB.getGOALDB(getApplicationContext());
+        List<GOALBL> list = dataBase.goalDAO().getCurrentFlexibleGoal();
+        Iterator<GOALBL> it = list.iterator();
+
+        GOALBL flex = it.next();//should only be one goal in progress per category
+
+
+
+        DateTime start = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(flex.getStart());
+        DateTime end = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(flex.getEnd());
+        DateTime today = new DateTime(DateTimeZone.UTC);
+        String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
+
+
+        double goal = flex.getGoal();
+        String category = flex.getCategory();
+        String status = flex.getStatus();
+
+
+
+
+
+        if(s.equals(end)){ //goal is complete, reset back
+
+            Button btn = findViewById(R.id.btngoal2);
+            btn.setEnabled(true);
+            btn.setText("Set Date");
+            findViewById(R.id.cat2goal).setVisibility(View.GONE);
+
+            TextView txt = findViewById(R.id.txtgoal2);
+            txt.setVisibility(View.GONE);
+            txt.setText("");
+
+            EditText ed = findViewById(R.id.cat2goal);
+            ed.setVisibility(View.VISIBLE);
+
+
+
+        }
+        else{ //goal is still going
+
+
+            Button btn = findViewById(R.id.btngoal2);
+            btn.setEnabled(false);
+            btn.setText(Integer.toString(Days.daysBetween(start,end).getDays()));
+            findViewById(R.id.cat2goal).setVisibility(View.GONE);
+
+            TextView txt = findViewById(R.id.txtgoal2);
+            txt.setVisibility(View.VISIBLE);
+            txt.setText(Double.toString(goal));
+        }
+    }
+
+    private void updateGoal3(){
+        Log.i("Main","Updating Goal3 ");
+        GOALDB dataBase = GOALDB.getGOALDB(getApplicationContext());
+        List<GOALBL> list = dataBase.goalDAO().getCurrentDiscretionaryGoal();
+        Iterator<GOALBL> it = list.iterator();
+
+        GOALBL disc = it.next();//should only be one goal in progress per category
+
+
+
+        DateTime start = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(disc.getStart());
+        DateTime end = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(disc.getEnd());
+        DateTime today = new DateTime(DateTimeZone.UTC);
+        String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
+
+
+        double goal = disc.getGoal();
+        String category = disc.getCategory();
+        String status = disc.getStatus();
+
+
+
+
+
+        if(s.equals(end)){ //goal is complete, reset back
+
+            Button btn = findViewById(R.id.btngoal3);
+            btn.setEnabled(true);
+            btn.setText("Set Date");
+            findViewById(R.id.cat3goal).setVisibility(View.GONE);
+
+            TextView txt = findViewById(R.id.txtgoal3);
+            txt.setVisibility(View.GONE);
+            txt.setText("");
+
+            EditText ed = findViewById(R.id.cat3goal);
+            ed.setVisibility(View.VISIBLE);
+
+
+
+        }
+        else{ //goal is still going
+
+
+            Button btn = findViewById(R.id.btngoal3);
+            btn.setEnabled(false);
+            btn.setText(Integer.toString(Days.daysBetween(start,end).getDays()));
+            findViewById(R.id.cat3goal).setVisibility(View.GONE);
+
+            TextView txt = findViewById(R.id.txtgoal3);
+            txt.setVisibility(View.VISIBLE);
+            txt.setText(Double.toString(goal));
+        }
+    }
+
     private void updateTable() {
         Log.i("Main", "Updating table with database");
         //CREATE/LOAD Database ENTDB
@@ -477,6 +659,8 @@ public class MainActivity extends AppCompatActivity {
         dataBase.expDAO().deleteAllExpenses();
     }
 
+    
+
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
 
@@ -485,7 +669,9 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 //THIS IS WHERE WE UPDATE PAGE
-                updateGoals();
+                updateGoal1();
+                updateGoal2();
+                updateGoal3();
                 updateTable();
 
 
