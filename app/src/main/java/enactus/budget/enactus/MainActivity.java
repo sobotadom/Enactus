@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TableRow;
+import android.widget.Toast;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -41,6 +42,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+// TODO: 2018-02-21 figure out how to make sure expenses the same day but before the goal was made being reflected in the goal progress
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,8 +67,11 @@ public class MainActivity extends AppCompatActivity {
         JodaTimeAndroid.init(this);
 
         //UPDATE DATABASE
-        //updateTable();
-        deleteAll();
+        updateTable();
+        updateGoal1();
+        updateGoal2();
+        updateGoal3();
+        //deleteAll();
 
 
 
@@ -164,12 +170,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                 if (s.length() == 0) {
-                    findViewById(R.id.btngoal1).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.btngoal1).setEnabled(false);
                 }
                 //SET GOAL IF A GOAL IS PUT IN
                 if (s.length() > 0) {
                     //cat1_goal = Double.parseDouble(s.toString());
-                    findViewById(R.id.btngoal1).setVisibility(View.VISIBLE);
+                    findViewById(R.id.btngoal1).setEnabled(true);
                 }
 
 
@@ -194,11 +200,11 @@ public class MainActivity extends AppCompatActivity {
 
                 //SET GOAL IF A GOAL IS PUT IN
                 if (s.length() == 0) {
-                    findViewById(R.id.btngoal2).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.btngoal2).setEnabled(false);
                 }
                 if (s.length() > 0) {
                     //cat2_goal = Double.parseDouble(s.toString());
-                    findViewById(R.id.btngoal2).setVisibility(View.VISIBLE);
+                    findViewById(R.id.btngoal2).setEnabled(true);
                 }
 
 
@@ -222,12 +228,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                 if (s.length() == 0) {
-                    findViewById(R.id.btngoal3).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.btngoal3).setEnabled(false);
                 }
                 //SET GOAL IF A GOAL IS PUT IN
                 if (s.length() > 0) {
                     //cat3_goal = Double.parseDouble(s.toString());
-                    findViewById(R.id.btngoal3).setVisibility(View.VISIBLE);
+                    findViewById(R.id.btngoal3).setEnabled(true);
                 }
 
 
@@ -310,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
         GOALDB dataBase = GOALDB.getGOALDB(getApplicationContext());
         GOALBL newGoal = new GOALBL();
 
-        dataBase.goalDAO().deleteAllGoals();
+        //dataBase.goalDAO().deleteAllGoals();
         DateTime today = new DateTime(DateTimeZone.UTC);
         String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
 
@@ -434,28 +440,20 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            if(s.equals(end)){ //goal is complete, reset back
+            if(Days.daysBetween(today.withTimeAtStartOfDay(), end.withTimeAtStartOfDay()).getDays() < 0 ){ //goal is complete, reset back
 
                 if (fixed.getProgress() >= 0.00) {  //test is progress is negative or positive
                     fixed.setStatus("Pass");
+                    Log.i("MAIN","fixed Goal complete!");
                     //NOTIFACTION?????
                 }
                 else{
                     fixed.setStatus("Fail");
+                    Log.i("MAIN","fixed Goal failed!");
                     //NOTIFICATION????
                 }
 
-                Button btn = findViewById(R.id.btngoal1);
-                btn.setEnabled(true);
-                btn.setText("Set Date");
-                findViewById(R.id.cat1goal).setVisibility(View.GONE);
-
-                TextView txt = findViewById(R.id.txtgoal1);
-                txt.setVisibility(View.GONE);
-                txt.setText("");
-
-                EditText ed = findViewById(R.id.cat1goal);
-                ed.setVisibility(View.VISIBLE);
+                resetGoals(R.id.txtgoal1,R.id.cat1goal, R.id.btngoal1);
 
 
 
@@ -465,13 +463,15 @@ public class MainActivity extends AppCompatActivity {
 
                 Button btn = findViewById(R.id.btngoal1);
                 btn.setEnabled(false);
-                btn.setText(Integer.toString(Days.daysBetween(start,end).getDays()));
+                btn.setText(Integer.toString(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays()));
                 findViewById(R.id.cat1goal).setVisibility(View.GONE);
 
                 TextView txt = findViewById(R.id.txtgoal1);
                 txt.setVisibility(View.VISIBLE);
 
                 double progress = goal - fixedCost();
+                fixed.setProgress(progress);
+
                 if(progress > 0){
                     txt.setTextColor(Color.GREEN);
                 }
@@ -511,28 +511,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            if(s.equals(end)){ //goal is complete, reset back
+            if(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays() < 0 ){ //goal is complete, reset back
 
                 if (flex.getProgress() >= 0.00) {  //test is progress is negative or positive
                     flex.setStatus("Pass");
+                    Log.i("MAIN","flex Goal complete!");
                     //NOTIFACTION?????
                 }
                 else{
                     flex.setStatus("Fail");
+                    Log.i("MAIN","flex Goal failed!");
                     //NOTIFICATION????
                 }
 
-                Button btn = findViewById(R.id.btngoal2);
-                btn.setEnabled(true);
-                btn.setText("Set Date");
-                findViewById(R.id.cat2goal).setVisibility(View.GONE);
 
-                TextView txt = findViewById(R.id.txtgoal2);
-                txt.setVisibility(View.GONE);
-                txt.setText("");
-
-                EditText ed = findViewById(R.id.cat2goal);
-                ed.setVisibility(View.VISIBLE);
+                resetGoals(R.id.txtgoal2,R.id.cat2goal, R.id.btngoal2);
 
 
 
@@ -542,13 +535,16 @@ public class MainActivity extends AppCompatActivity {
 
                 Button btn = findViewById(R.id.btngoal2);
                 btn.setEnabled(false);
-                btn.setText(Integer.toString(Days.daysBetween(start,end).getDays()));
+                btn.setText(Integer.toString(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays()));
                 findViewById(R.id.cat2goal).setVisibility(View.GONE);
 
                 TextView txt = findViewById(R.id.txtgoal2);
                 txt.setVisibility(View.VISIBLE);
                 double progress = goal - flexCost() ;
+                flex.setProgress(progress);
+
                 if(progress > 0){
+
                     txt.setTextColor(Color.GREEN);
                 }
                 else{
@@ -581,30 +577,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            if(s.equals(end)){ //goal is complete, reset back
+            if(Days.daysBetween(today.withTimeAtStartOfDay(), end.withTimeAtStartOfDay()).getDays() < 0 ){ //goal is complete, reset back
 
                 if (disc.getProgress() >= 0.00) {  //test is progress is negative or positive
                     disc.setStatus("Pass");
+                    Log.i("MAIN","disc Goal complete!");
                     //NOTIFACTION?????
                 }
                 else{
                     disc.setStatus("Fail");
+                    Log.i("MAIN","disc Goal failed!");
                     //NOTIFICATION????
                 }
 
 
-                Button btn = findViewById(R.id.btngoal3);
-                btn.setEnabled(true);
-                btn.setText("Set Date");
-                findViewById(R.id.cat3goal).setVisibility(View.GONE);
-
-                TextView txt = findViewById(R.id.txtgoal3);
-                txt.setVisibility(View.GONE);
-                txt.setText("");
-
-                EditText ed = findViewById(R.id.cat3goal);
-                ed.setVisibility(View.VISIBLE);
-
+                resetGoals(R.id.txtgoal3,R.id.cat3goal, R.id.btngoal3);
 
 
             }
@@ -613,12 +600,14 @@ public class MainActivity extends AppCompatActivity {
 
                 Button btn = findViewById(R.id.btngoal3);
                 btn.setEnabled(false);
-                btn.setText(Integer.toString(Days.daysBetween(start,end).getDays()));
+                btn.setText(Integer.toString(Days.daysBetween(start.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays()));
                 findViewById(R.id.cat3goal).setVisibility(View.GONE);
 
                 TextView txt = findViewById(R.id.txtgoal3);
                 txt.setVisibility(View.VISIBLE);
                 double progress = goal - discCost();
+                disc.setProgress(progress);
+
                 if(progress > 0){
                     txt.setTextColor(Color.GREEN);
                 }
@@ -632,6 +621,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void resetGoals(int txt2, int cat2, int btn2){ //reset goal table
+        Button btn = findViewById(btn2);
+        btn.setEnabled(false);
+        btn.setText("Set Date");
+        findViewById(cat2).setVisibility(View.GONE);
+
+        TextView txt = findViewById(txt2);
+        txt.setVisibility(View.GONE);
+        txt.setText("");
+
+        EditText ed = findViewById(cat2);
+        ed.setVisibility(View.VISIBLE);
+        ed.setText("");
+    }
     private GOALBL currentFixed(){
         GOALDB dataBase = GOALDB.getGOALDB(getApplicationContext());
         List<GOALBL> list = dataBase.goalDAO().getCurrentFixedGoal();
@@ -680,7 +683,7 @@ public class MainActivity extends AppCompatActivity {
         TableLayout tl = findViewById(R.id.tableLayout);
         TableRow header = findViewById(R.id.header);
 
-        Log.d("CUNT","HELO" +  Integer.toString(tl.getChildCount()));
+
         tl.removeAllViews();
         tl.addView(header);
 
@@ -748,6 +751,7 @@ public class MainActivity extends AppCompatActivity {
     private void deleteAll(){
         ENTDB dataBase=ENTDB.getENTDB(getApplicationContext());
         dataBase.expDAO().deleteAllExpenses();
+        updateTable();
     }
 
     private double fixedCost(){
@@ -758,7 +762,7 @@ public class MainActivity extends AppCompatActivity {
         GOALBL fixed = currentFixed();
         if (fixed != null){
             DateTime start = DateTime.parse(fixed.getStart());
-            Log.d("FIXEDDDD", start.toString());
+
 
             List<EXPTBL> list = dataBase.expDAO().getFixedExpenses();
             Iterator<EXPTBL> it = list.iterator();
@@ -768,7 +772,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(!day.isBefore(start)){ //if the date of the expense happens before the goal was set, dont update the goal
                     cost += exp.getQuantity() * exp.getCost();
-                    Log.d("FIXED TEST", Double.toString(cost));
+
                 }
 
             }
@@ -797,7 +801,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-        Log.i("FLEXCOST", Double.toString(cost));
+
         return cost;
     }
 
@@ -821,7 +825,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-        Log.i("DISCCOST", Double.toString(cost));
+
         return cost;
     }
     protected void onActivityResult(int requestCode, int resultCode,
@@ -836,7 +840,6 @@ public class MainActivity extends AppCompatActivity {
                 updateGoal1();
                 updateGoal2();
                 updateGoal3();
-
 
 
 
@@ -859,7 +862,14 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.clear) {
+            deleteAll();
+            GOALDB dataBase = GOALDB.getGOALDB(getApplicationContext());
+            dataBase.goalDAO().deleteAllGoals();
+            resetGoals(R.id.txtgoal1,R.id.cat1goal,R.id.btngoal1);
+            resetGoals(R.id.txtgoal2,R.id.cat2goal,R.id.btngoal2);
+            resetGoals(R.id.txtgoal3,R.id.cat3goal,R.id.btngoal3);
+
             return true;
         }
 
