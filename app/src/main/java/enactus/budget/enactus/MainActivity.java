@@ -1,8 +1,10 @@
 package enactus.budget.enactus;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -95,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
                 "All",
                 "Fixed",
                 "Flexible",
-                "Discretionary"
+                "Discretionary",
+                "Goals"
 
         };
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -418,6 +421,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+   
+   
+
 
     private void updateGoal1(){
         Log.i("Main","Updating Goal1 ");
@@ -440,16 +446,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            if(Days.daysBetween(today.withTimeAtStartOfDay(), end.withTimeAtStartOfDay()).getDays() < 0 ){ //goal is complete, reset back
+            if(Days.daysBetween(today.withTimeAtStartOfDay(), end.withTimeAtStartOfDay()).getDays() < 1 ){ //goal is complete, reset back
 
                 if (fixed.getProgress() >= 0.00) {  //test is progress is negative or positive
                     fixed.setStatus("Pass");
                     Log.i("MAIN","fixed Goal complete!");
+                    showPopup("PASS");
                     //NOTIFACTION?????
                 }
                 else{
                     fixed.setStatus("Fail");
                     Log.i("MAIN","fixed Goal failed!");
+                    showPopup("Fail");
                     //NOTIFICATION????
                 }
 
@@ -511,15 +519,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            if(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays() < 0 ){ //goal is complete, reset back
+            if(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays() < 1 ){ //goal is complete, reset back
 
                 if (flex.getProgress() >= 0.00) {  //test is progress is negative or positive
                     flex.setStatus("Pass");
+                    showPopup("PASS");
                     Log.i("MAIN","flex Goal complete!");
+
                     //NOTIFACTION?????
                 }
                 else{
                     flex.setStatus("Fail");
+                    showPopup("FAIL");
                     Log.i("MAIN","flex Goal failed!");
                     //NOTIFICATION????
                 }
@@ -575,18 +586,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+             showPopup(Integer.toString(Days.daysBetween(today.withTimeAtStartOfDay(), end.withTimeAtStartOfDay()).getDays()));
+
+            if(Days.daysBetween(today.withTimeAtStartOfDay(), end.withTimeAtStartOfDay()).getDays() < 1 ){ //goal is complete, reset back
 
 
-            if(Days.daysBetween(today.withTimeAtStartOfDay(), end.withTimeAtStartOfDay()).getDays() < 0 ){ //goal is complete, reset back
 
                 if (disc.getProgress() >= 0.00) {  //test is progress is negative or positive
                     disc.setStatus("Pass");
                     Log.i("MAIN","disc Goal complete!");
-                    //NOTIFACTION?????
+                    showPopup("PASS");
                 }
                 else{
                     disc.setStatus("Fail");
                     Log.i("MAIN","disc Goal failed!");
+                    showPopup("FAIL");
                     //NOTIFICATION????
                 }
 
@@ -600,7 +614,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Button btn = findViewById(R.id.btngoal3);
                 btn.setEnabled(false);
-                btn.setText(Integer.toString(Days.daysBetween(start.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays()));
+                btn.setText(Integer.toString(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays()));
                 findViewById(R.id.cat3goal).setVisibility(View.GONE);
 
                 TextView txt = findViewById(R.id.txtgoal3);
@@ -828,6 +842,28 @@ public class MainActivity extends AppCompatActivity {
 
         return cost;
     }
+
+    private void showPopup(String s){
+        AlertDialog.Builder build = new AlertDialog.Builder(this);
+        build.setMessage(s);
+        build.setCancelable(true) ;
+        build.setPositiveButton(
+            "Yes",
+         new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();        
+         }
+         });
+
+
+
+
+
+
+
+        AlertDialog a = build.create();
+        a.show();
+    }
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
 
@@ -836,6 +872,11 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 //THIS IS WHERE WE UPDATE PAGE
+
+                
+                
+
+
                 updateTable();
                 updateGoal1();
                 updateGoal2();

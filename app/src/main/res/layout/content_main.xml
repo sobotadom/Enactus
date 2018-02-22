@@ -61,8 +61,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:enabled="false"
                     android:text="Set Date"
-                    android:visibility="invisible" />
+                    android:visibility="visible"
+                    tools:enabled="false" />
             </TableRow>
 
             <TableRow
@@ -101,8 +103,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:enabled="false"
                     android:text="Set Date"
-                    android:visibility="invisible" />
+                    android:visibility="visible" />
             </TableRow>
 
             <TableRow
@@ -142,8 +145,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:enabled="false"
                     android:text="Set Date"
-                    android:visibility="invisible" />
+                    android:visibility="visible"/>
             </TableRow>
 
         </TableLayout>

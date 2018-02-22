@@ -537,7 +537,11 @@ public class Expense  extends Activity{
 
 
                 }
-                setResult(RESULT_OK, null);
+                Intent i = new Intent();
+
+
+
+                setResult(RESULT_OK, i);
                 finish();
             }
         });
