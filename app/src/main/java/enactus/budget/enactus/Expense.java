@@ -524,7 +524,8 @@ public class Expense  extends Activity{
 
                     //date cannot be type Date
                     //convert date to string
-                    String s = q.getValue0().getYear() + "-" + q.getValue0().getMonthOfYear() + "-" + q.getValue0().getDayOfMonth();
+                    String s = q.getValue0().getYear() + "-" + q.getValue0().getMonthOfYear() + "-" + q.getValue0().getDayOfMonth()
+                            + " " + q.getValue0().getHourOfDay() + ":" + q.getValue0().getMinuteOfHour() + ":" + q.getValue0().getSecondOfMinute();
 
                     newExp.setDate(s);
                     newExp.setCategory(q.getValue3());

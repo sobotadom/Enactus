@@ -37,6 +37,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.w3c.dom.Text;
 
 import java.time.LocalDate;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private static int REQUEST_CODE = 0;
     private double totalSpent = 0;
     private int sort_by;
+    private TableRow header;
     //private double cat1_goal, cat2_goal, cat3_goal;
    // private String category;
     //private DateTime date_fixed, date_flexible, date_discretionary;
@@ -66,13 +68,16 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 
+
+
         JodaTimeAndroid.init(this);
 
         //UPDATE DATABASE
-        updateTable();
+
         updateGoal1();
         updateGoal2();
         updateGoal3();
+        updateTable();
         //deleteAll();
 
 
@@ -115,13 +120,7 @@ public class MainActivity extends AppCompatActivity {
                                         ViewGroup parent) {
 
                 View view = super.getDropDownView(position, convertView, parent);
-                /*TextView tv = (TextView) view;
-                if (position == 0) {
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.GRAY);
-                } else {
-                    tv.setTextColor(Color.BLACK);
-                }*/
+
                 return view;
             }
         };
@@ -319,9 +318,9 @@ public class MainActivity extends AppCompatActivity {
         GOALDB dataBase = GOALDB.getGOALDB(getApplicationContext());
         GOALBL newGoal = new GOALBL();
 
-        //dataBase.goalDAO().deleteAllGoals();
+
         DateTime today = new DateTime(DateTimeZone.UTC);
-        String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
+        String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth() + " " + today.getHourOfDay() + ":" + today.getMinuteOfHour() + ":" + today.getSecondOfMinute();
 
 
         switch(id){
@@ -432,15 +431,15 @@ public class MainActivity extends AppCompatActivity {
         GOALBL fixed = currentFixed();//should only be one goal in progress per category
 
         if( fixed != null){
-            DateTime start = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(fixed.getStart());
+           // DateTime start = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(fixed.getStart());
             DateTime end = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(fixed.getEnd());
             DateTime today = new DateTime(DateTimeZone.UTC);
-            String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
+
 
 
             double goal = fixed.getGoal();
-            String category = fixed.getCategory();
-            String status = fixed.getStatus();
+           // String category = fixed.getCategory();
+           // String status = fixed.getStatus();
 
 
 
@@ -449,19 +448,22 @@ public class MainActivity extends AppCompatActivity {
             if(Days.daysBetween(today.withTimeAtStartOfDay(), end.withTimeAtStartOfDay()).getDays() < 1 ){ //goal is complete, reset back
 
                 if (fixed.getProgress() >= 0.00) {  //test is progress is negative or positive
-                    fixed.setStatus("Pass");
-                    Log.i("MAIN","fixed Goal complete!");
-                    showPopup("PASS");
+                    resetGoals(R.id.txtgoal1,R.id.cat1goal, R.id.btngoal1);
+                    GOALDB.getGOALDB(this).goalDAO().goalPassed("Fixed");
+
+                    Log.i("FIXED STATUS",fixed.getStatus());
+                    showPopup("You completed your fixed Goal of " + fixed.getGoal() + " \nfrom " + fixed.getStart() + " to " + fixed.getEnd() );
                     //NOTIFACTION?????
                 }
                 else{
-                    fixed.setStatus("Fail");
+                    resetGoals(R.id.txtgoal1,R.id.cat1goal, R.id.btngoal1);
+                    GOALDB.getGOALDB(this).goalDAO().goalFailed("Fixed");
                     Log.i("MAIN","fixed Goal failed!");
-                    showPopup("Fail");
+                    showPopup("You failed your fixed Goal of " + fixed.getGoal() + " \nfrom " + fixed.getStart() + " to " + fixed.getEnd() );
                     //NOTIFICATION????
                 }
 
-                resetGoals(R.id.txtgoal1,R.id.cat1goal, R.id.btngoal1);
+                threeFails();
 
 
 
@@ -478,9 +480,9 @@ public class MainActivity extends AppCompatActivity {
                 txt.setVisibility(View.VISIBLE);
 
                 double progress = goal - fixedCost();
-                fixed.setProgress(progress);
+                GOALDB.getGOALDB(this).goalDAO().updateProgress(progress,"Fixed");
 
-                if(progress > 0){
+                if(progress >= 0){
                     txt.setTextColor(Color.GREEN);
                 }
                 else{
@@ -491,6 +493,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+        updateTable();
+
 
     }
 
@@ -505,15 +509,15 @@ public class MainActivity extends AppCompatActivity {
         GOALBL flex = currentFlexible();//should only be one goal in progress per category
 
         if(flex != null){
-            DateTime start = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(flex.getStart());
+            //DateTime start = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(flex.getStart());
             DateTime end = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(flex.getEnd());
             DateTime today = new DateTime(DateTimeZone.UTC);
-            String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
+            //String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
 
 
             double goal = flex.getGoal();
-            String category = flex.getCategory();
-            String status = flex.getStatus();
+           // String category = flex.getCategory();
+           // String status = flex.getStatus();
 
 
 
@@ -522,21 +526,23 @@ public class MainActivity extends AppCompatActivity {
             if(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays() < 1 ){ //goal is complete, reset back
 
                 if (flex.getProgress() >= 0.00) {  //test is progress is negative or positive
-                    flex.setStatus("Pass");
-                    showPopup("PASS");
+                    resetGoals(R.id.txtgoal2,R.id.cat2goal, R.id.btngoal2);
+                    GOALDB.getGOALDB(this).goalDAO().goalPassed("Flexible");
+                    showPopup("You completed your flexible Goal of " + flex.getGoal() + " \nfrom " + flex.getStart() + " to " + flex.getEnd() );
                     Log.i("MAIN","flex Goal complete!");
 
                     //NOTIFACTION?????
                 }
                 else{
-                    flex.setStatus("Fail");
-                    showPopup("FAIL");
+                    resetGoals(R.id.txtgoal2,R.id.cat2goal, R.id.btngoal2);
+                    GOALDB.getGOALDB(this).goalDAO().goalFailed("Flexible");
+                    showPopup("You failed your flexible Goal of " + flex.getGoal() + " \nfrom " + flex.getStart() + " to " + flex.getEnd() );
                     Log.i("MAIN","flex Goal failed!");
                     //NOTIFICATION????
                 }
 
+                threeFails();
 
-                resetGoals(R.id.txtgoal2,R.id.cat2goal, R.id.btngoal2);
 
 
 
@@ -552,9 +558,9 @@ public class MainActivity extends AppCompatActivity {
                 TextView txt = findViewById(R.id.txtgoal2);
                 txt.setVisibility(View.VISIBLE);
                 double progress = goal - flexCost() ;
-                flex.setProgress(progress);
+                GOALDB.getGOALDB(this).goalDAO().updateProgress(progress,"Flexible");
 
-                if(progress > 0){
+                if(progress >= 0){
 
                     txt.setTextColor(Color.GREEN);
                 }
@@ -564,7 +570,7 @@ public class MainActivity extends AppCompatActivity {
                 txt.setText(Double.toString(progress));
             }
         }
-
+        updateTable();
 
     }
 
@@ -574,38 +580,42 @@ public class MainActivity extends AppCompatActivity {
         GOALBL disc = currentDiscretionary();
 
         if(disc != null){
-            DateTime start = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(disc.getStart());
+           // DateTime start = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(disc.getStart());
             DateTime end = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(disc.getEnd());
             DateTime today = new DateTime(DateTimeZone.UTC);
-            String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
+            //String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
 
 
             double goal = disc.getGoal();
-            String category = disc.getCategory();
-            String status = disc.getStatus();
+            //String category = disc.getCategory();
+           // String status = disc.getStatus();
 
 
 
-             showPopup(Integer.toString(Days.daysBetween(today.withTimeAtStartOfDay(), end.withTimeAtStartOfDay()).getDays()));
+
 
             if(Days.daysBetween(today.withTimeAtStartOfDay(), end.withTimeAtStartOfDay()).getDays() < 1 ){ //goal is complete, reset back
 
 
 
                 if (disc.getProgress() >= 0.00) {  //test is progress is negative or positive
-                    disc.setStatus("Pass");
+                    resetGoals(R.id.txtgoal3,R.id.cat3goal, R.id.btngoal3);
+                    GOALDB.getGOALDB(this).goalDAO().goalPassed("Discretionary");
                     Log.i("MAIN","disc Goal complete!");
-                    showPopup("PASS");
+                    showPopup("You completed your discretionary Goal of " + disc.getGoal() + " \nfrom " + disc.getStart() + " to " + disc.getEnd() );
+
                 }
                 else{
-                    disc.setStatus("Fail");
+                    resetGoals(R.id.txtgoal3,R.id.cat3goal, R.id.btngoal3);
+                    GOALDB.getGOALDB(this).goalDAO().goalFailed("Discretionary");
                     Log.i("MAIN","disc Goal failed!");
-                    showPopup("FAIL");
+                    showPopup("You failed your discretionary Goal of " + disc.getGoal() + "\n from " + disc.getStart() + " to " + disc.getEnd() );
+
                     //NOTIFICATION????
                 }
 
+                threeFails();
 
-                resetGoals(R.id.txtgoal3,R.id.cat3goal, R.id.btngoal3);
 
 
             }
@@ -620,9 +630,9 @@ public class MainActivity extends AppCompatActivity {
                 TextView txt = findViewById(R.id.txtgoal3);
                 txt.setVisibility(View.VISIBLE);
                 double progress = goal - discCost();
-                disc.setProgress(progress);
+                GOALDB.getGOALDB(this).goalDAO().updateProgress(progress,"Discretionary");
 
-                if(progress > 0){
+                if(progress >= 0){
                     txt.setTextColor(Color.GREEN);
                 }
                 else{
@@ -631,7 +641,7 @@ public class MainActivity extends AppCompatActivity {
                 txt.setText(Double.toString(progress));
             }
         }
-
+        updateTable();
 
     }
 
@@ -649,6 +659,98 @@ public class MainActivity extends AppCompatActivity {
         ed.setVisibility(View.VISIBLE);
         ed.setText("");
     }
+
+    private void showAllGoals(){
+        GOALDB db = GOALDB.getGOALDB(this);
+        List<GOALBL> list =  db.goalDAO().getAllGoals();
+        TableLayout tl = findViewById(R.id.tableLayout);
+        tl.removeAllViews();
+        tl.addView(header);
+        goalHeader();
+
+
+
+        for(GOALBL g : list){
+            TableRow tr = new TableRow(this);
+            double cost = 0;
+            switch (g.getCategory()){
+                case "Fixed": cost = fixedCost();
+                    break;
+                case "Flexible": cost = flexCost();
+                    break;
+                case "Discretionary": cost = discCost();
+                    break;
+
+            }
+            //show Remaining
+            TextView goal = new TextView(this);
+            goal.setText(Double.toString(g.getGoal() - cost ));
+            goal.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(goal);
+
+            //show Status
+            TextView progress = new TextView(this);
+            progress.setText(g.getStatus());
+            progress.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(progress);
+
+            //show cat
+            TextView cat = new TextView(this);
+            cat.setText(g.getCategory());
+            cat.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(cat);
+
+            //show start
+            TextView start = new TextView(this);
+            start.setText(g.getStart());
+            start.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(start);
+
+            //show end
+            TextView end = new TextView(this);
+            end.setText(g.getEnd());
+            end.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            tr.addView(end);
+
+            tl.addView(tr);
+        }
+
+    }
+
+    private void tableHeader(){
+        TextView txt1 = (TextView) header.getChildAt(0);
+        txt1.setText("Cost");
+
+        txt1 = (TextView) header.getChildAt(1);
+        txt1.setText("Quantity");
+
+        txt1 = (TextView) header.getChildAt(2);
+        txt1.setText("Category");
+
+        txt1 = (TextView) header.getChildAt(3);
+        txt1.setText("Comment");
+
+        txt1 = (TextView) header.getChildAt(4);
+        txt1.setText("Date");
+
+    }
+    private void goalHeader(){
+        TextView txt1 = (TextView) header.getChildAt(0);
+        txt1.setText("Goal");
+
+        txt1 = (TextView) header.getChildAt(1);
+        txt1.setText("Status");
+
+        txt1 = (TextView) header.getChildAt(2);
+        txt1.setText("Category");
+
+        txt1 = (TextView) header.getChildAt(3);
+        txt1.setText("Start");
+
+        txt1 = (TextView) header.getChildAt(4);
+        txt1.setText("End");
+    }
+
     private GOALBL currentFixed(){
         GOALDB dataBase = GOALDB.getGOALDB(getApplicationContext());
         List<GOALBL> list = dataBase.goalDAO().getCurrentFixedGoal();
@@ -695,27 +797,45 @@ public class MainActivity extends AppCompatActivity {
 
         //clear out table so we get no duplicates
         TableLayout tl = findViewById(R.id.tableLayout);
-        TableRow header = findViewById(R.id.header);
+        header = findViewById(R.id.header);
 
 
         tl.removeAllViews();
         tl.addView(header);
-
+        tableHeader();
 
         if (sort_by == 0) {  //GETS ALL EXPENSES FROM DATABASE
             //GET TUPLES FROM DATABASE
             expenses = dataBase.expDAO().getAllExpenses();
+            displayTable(expenses, tl);
 
         } else if (sort_by == 1) {
             expenses = dataBase.expDAO().getFixedExpenses();
+            displayTable(expenses, tl);
+
         } else if (sort_by == 2) {
             expenses = dataBase.expDAO().getFlexibleExpenses();
+            displayTable(expenses, tl);
+
         } else if (sort_by == 3) {
             expenses = dataBase.expDAO().getDiscretionaryExpenses();
-        } else {
+            displayTable(expenses, tl);
+
+        }else if (sort_by == 4){
+            showAllGoals();
+
+
+
+        }
+        else {
             Log.e("SPINNER", "Somehow someone selected a category not on the list");
         }
 
+
+
+    }
+
+    private void displayTable(List<EXPTBL> expenses, TableLayout tl) {
         //Use iterator to go through list easily to list all elements
         Iterator<EXPTBL> expensesIterator = expenses.iterator();
 
@@ -725,7 +845,6 @@ public class MainActivity extends AppCompatActivity {
             EXPTBL current = expensesIterator.next();
             String expenseOut = current.toString();
             Log.i("Inputting into Table:  ", "HELLO " + current.getCategory());
-
 
 
             //cost
@@ -759,13 +878,16 @@ public class MainActivity extends AppCompatActivity {
             tr.addView(date);
 
             tl.addView(tr);
-
         }
     }
     private void deleteAll(){
         ENTDB dataBase=ENTDB.getENTDB(getApplicationContext());
         dataBase.expDAO().deleteAllExpenses();
+        GOALDB db = GOALDB.getGOALDB(this);
+        db.goalDAO().deleteAllGoals();
+
         updateTable();
+
     }
 
     private double fixedCost(){
@@ -775,14 +897,15 @@ public class MainActivity extends AppCompatActivity {
         ENTDB dataBase = ENTDB.getENTDB(getApplicationContext());
         GOALBL fixed = currentFixed();
         if (fixed != null){
-            DateTime start = DateTime.parse(fixed.getStart());
+            DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+            DateTime start = dt.parseDateTime(fixed.getStart());
 
 
             List<EXPTBL> list = dataBase.expDAO().getFixedExpenses();
             Iterator<EXPTBL> it = list.iterator();
             while(it.hasNext()){
                 EXPTBL exp = it.next();
-                DateTime day = DateTime.parse(exp.getDate());
+                DateTime day = dt.parseDateTime(exp.getDate());
 
                 if(!day.isBefore(start)){ //if the date of the expense happens before the goal was set, dont update the goal
                     cost += exp.getQuantity() * exp.getCost();
@@ -801,13 +924,14 @@ public class MainActivity extends AppCompatActivity {
         ENTDB dataBase = ENTDB.getENTDB(getApplicationContext());
         GOALBL flex = currentFlexible();
         if (flex != null){
-            DateTime start = DateTime.parse(flex.getStart());
+            DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+            DateTime start = dt.parseDateTime(flex.getStart());
 
             List<EXPTBL> list = dataBase.expDAO().getFlexibleExpenses();
             Iterator<EXPTBL> it = list.iterator();
             while(it.hasNext()){
                 EXPTBL exp = it.next();
-                DateTime day = DateTime.parse(exp.getDate());
+                DateTime day = dt.parseDateTime(exp.getDate());
 
                 if(!day.isBefore(start)){ //if the date of the expense happens before the goal was set, dont update the goal
                     cost += exp.getQuantity() * exp.getCost();
@@ -823,15 +947,16 @@ public class MainActivity extends AppCompatActivity {
         double cost = 0.0;
 
         ENTDB dataBase = ENTDB.getENTDB(getApplicationContext());
-        GOALBL flex = currentDiscretionary();
-        if (flex != null){
-            DateTime start = DateTime.parse(flex.getStart());
+        GOALBL disc = currentDiscretionary();
+        if (disc != null){
+            DateTimeFormatter dt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+            DateTime start = dt.parseDateTime(disc.getStart());
 
             List<EXPTBL> list = dataBase.expDAO().getDiscretionaryExpenses();
             Iterator<EXPTBL> it = list.iterator();
             while(it.hasNext()){
                 EXPTBL exp = it.next();
-                DateTime day = DateTime.parse(exp.getDate());
+                DateTime day = dt.parseDateTime(exp.getDate());
 
                 if(!day.isBefore(start)){ //if the date of the expense happens before the goal was set, dont update the goal
                     cost += exp.getQuantity() * exp.getCost();
@@ -841,6 +966,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return cost;
+    }
+
+    private void threeFails(){
+        int fails = GOALDB.getGOALDB(this).goalDAO().numFail();
+        if( fails >= 3){
+            showPopup("HERE IS WHERE ILL PUT SOME RESOURCES");
+        }
+
+
     }
 
     private void showPopup(String s){

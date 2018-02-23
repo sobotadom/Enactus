@@ -33,7 +33,7 @@ public class GOALBL {
     @ColumnInfo(name="status")
     private String status;
 
-    //status of goal
+    //progress of goal
     @ColumnInfo(name="progress")
     private double progress;
 
@@ -82,8 +82,8 @@ public class GOALBL {
         return status;
     }
 
-    public void setStatus(String comment) {
-        this.status = comment;
+    public void setStatus(String stat) {
+        this.status = stat;
     }
 
     public double getProgress(){return progress;}
