@@ -2,14 +2,11 @@ package enactus.budget.enactus;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -29,34 +26,23 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TableRow;
-import android.widget.Toast;
-
 import net.danlew.android.joda.JodaTimeAndroid;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.w3c.dom.Text;
-
-import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-// TODO: 2018-02-21 figure out how to make sure expenses the same day but before the goal was made being reflected in the goal progress
+
 
 public class MainActivity extends AppCompatActivity {
 
     private static int REQUEST_CODE = 0;
-    private double totalSpent = 0;
     private int sort_by;
     private TableRow header;
-    //private double cat1_goal, cat2_goal, cat3_goal;
-   // private String category;
-    //private DateTime date_fixed, date_flexible, date_discretionary;
 
 
     @Override
@@ -78,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         updateGoal2();
         updateGoal3();
         updateTable();
-        //deleteAll();
+
 
 
 
@@ -205,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                     findViewById(R.id.btngoal2).setEnabled(false);
                 }
                 if (s.length() > 0) {
-                    //cat2_goal = Double.parseDouble(s.toString());
+
                     findViewById(R.id.btngoal2).setEnabled(true);
                 }
 
@@ -234,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //SET GOAL IF A GOAL IS PUT IN
                 if (s.length() > 0) {
-                    //cat3_goal = Double.parseDouble(s.toString());
+
                     findViewById(R.id.btngoal3).setEnabled(true);
                 }
 
@@ -431,15 +417,14 @@ public class MainActivity extends AppCompatActivity {
         GOALBL fixed = currentFixed();//should only be one goal in progress per category
 
         if( fixed != null){
-           // DateTime start = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(fixed.getStart());
+
             DateTime end = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(fixed.getEnd());
             DateTime today = new DateTime(DateTimeZone.UTC);
 
 
 
             double goal = fixed.getGoal();
-           // String category = fixed.getCategory();
-           // String status = fixed.getStatus();
+
 
 
 
@@ -509,15 +494,14 @@ public class MainActivity extends AppCompatActivity {
         GOALBL flex = currentFlexible();//should only be one goal in progress per category
 
         if(flex != null){
-            //DateTime start = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(flex.getStart());
+
             DateTime end = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(flex.getEnd());
             DateTime today = new DateTime(DateTimeZone.UTC);
-            //String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
+
 
 
             double goal = flex.getGoal();
-           // String category = flex.getCategory();
-           // String status = flex.getStatus();
+
 
 
 
@@ -580,15 +564,14 @@ public class MainActivity extends AppCompatActivity {
         GOALBL disc = currentDiscretionary();
 
         if(disc != null){
-           // DateTime start = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(disc.getStart());
+
             DateTime end = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(disc.getEnd());
             DateTime today = new DateTime(DateTimeZone.UTC);
-            //String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth();
+
 
 
             double goal = disc.getGoal();
-            //String category = disc.getCategory();
-           // String status = disc.getStatus();
+
 
 
 
