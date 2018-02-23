@@ -55,10 +55,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        GOALDB dataBase = GOALDB.getGOALDB(getApplicationContext());
+
 
         JodaTimeAndroid.init(this);
 
         //UPDATE DATABASE
+
+
 
         updateGoal1();
         updateGoal2();
@@ -473,7 +477,7 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     txt.setTextColor(Color.RED);
                 }
-                txt.setText(Double.toString(progress));
+                txt.setText(String.format("%.2f", progress));
             }
 
 
@@ -551,7 +555,7 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     txt.setTextColor(Color.RED);
                 }
-                txt.setText(Double.toString(progress));
+                txt.setText(String.format("%.2f",progress));
             }
         }
         updateTable();
@@ -621,7 +625,7 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     txt.setTextColor(Color.RED);
                 }
-                txt.setText(Double.toString(progress));
+                txt.setText(String.format("%.2f",progress));
             }
         }
         updateTable();
@@ -667,7 +671,7 @@ public class MainActivity extends AppCompatActivity {
             }
             //show Remaining
             TextView goal = new TextView(this);
-            goal.setText(Double.toString(g.getGoal() - cost ));
+            goal.setText(String.format("%.2f",g.getGoal() - cost ));
             goal.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tr.addView(goal);
 
@@ -826,19 +830,19 @@ public class MainActivity extends AppCompatActivity {
             TableRow tr = new TableRow(this);
 
             EXPTBL current = expensesIterator.next();
-            String expenseOut = current.toString();
+           // String expenseOut = current.toString();
             Log.i("Inputting into Table:  ", "HELLO " + current.getCategory());
 
 
             //cost
             TextView cost = new TextView(this);
-            cost.setText(Double.toString(current.getCost()));
+            cost.setText(String.format("%.2f", current.getCost()));
             cost.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tr.addView(cost);
 
             //quantity
             TextView quantity = new TextView(this);
-            quantity.setText(Double.toString(current.getQuantity()));
+            quantity.setText(Integer.toString(current.getQuantity()));
             quantity.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tr.addView(quantity);
 
