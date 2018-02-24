@@ -689,7 +689,7 @@ public class MainActivity extends AppCompatActivity {
 
             //show start
             TextView start = new TextView(this);
-            start.setText(g.getStart());
+            start.setText(g.getStart().substring(0,8));
             start.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tr.addView(start);
 
@@ -860,7 +860,7 @@ public class MainActivity extends AppCompatActivity {
 
             //date
             TextView date = new TextView(this);
-            date.setText(current.getDate());
+            date.setText(current.getDate().substring(0,8));
             date.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tr.addView(date);
 

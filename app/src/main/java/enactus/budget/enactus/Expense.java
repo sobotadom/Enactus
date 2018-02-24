@@ -44,17 +44,16 @@ import java.util.Date;
  */
 
 public class Expense  extends Activity{
-    private double taxRate = 1.13;
-    private String expenseStr, category, comment;
+    private String category, comment;
     private double subtotal, expense , total;
     private ArrayList<Quintet<DateTime,Double,Integer,String,String>> tuples;
-
-    private int number, finalindex;
+    private int number;
     private boolean isValidExpense;
+
     @Override
     public void onCreate(Bundle savedInstanceState){
 
-        finalindex = 1;
+
         tuples = new ArrayList<>();
 
         //Set   up window
@@ -62,7 +61,7 @@ public class Expense  extends Activity{
         setContentView(R.layout.expense);
         expense = 0;
         total = 0;
-        finalindex = 0;
+
         category = "Category";
         isValidExpense = false;
 
@@ -163,67 +162,14 @@ public class Expense  extends Activity{
         //---------------------------------------------------------------
 
 
-
-
-
         //get expense value
-        //Button btnadd = findViewById(R.id.btnadd);
+
         final Button btnconfirm = findViewById(R.id.btnconfirm);
         final Button btnenter = findViewById(R.id.btnenter);
         final TextView expenseoutput = findViewById(R.id.expenseoutput);
         final EditText expenseinput = findViewById(R.id.expenseinput);
         final EditText num = findViewById(R.id.num);
         final EditText commented = findViewById(R.id.com);
-
-
-
-
-        /***
-         *
-         * Im planning on replacing this button with just an edit text text change listener but thats just cosmetic
-         */
-
-        /*
-        btnadd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                //number validation
-
-
-                //expense validation, minumum one cent
-                String temp = expenseinput.getText().toString();
-                if (temp.matches("")){
-                    //invalid
-
-                    Log.e("BTNADD", "EXPENSE NOT ENTERED");
-                    builder1.setMessage("Please enter an expense");
-                    AlertDialog alert11 = builder1.create();
-                    alert11.show();
-                }
-                else if(Double.parseDouble(temp) < 0.01) {
-                    //invalid
-
-                    Log.e("BTNADD","EXPENSE LESS THAN 1 CENT");
-                    builder1.setMessage("Please enter at least $0.01");
-                    AlertDialog alert11 = builder1.create();
-                    alert11.show();
-                }
-                else {
-                    //valid
-                    isValidExpense = true;
-                    expense= Double.parseDouble(temp);
-                    subtotal = Math.round(number * expense * 100.0) / 100.0;
-                    Log.d("BTNADD", String.format("%.2f",subtotal));
-                    expenseStr = "$ " + String.format("%.2f",subtotal);
-                    expenseoutput.setText(expenseStr);
-                }
-
-
-
-            }
-        }); */
 
 
         expenseinput.addTextChangedListener(new TextWatcher() {
@@ -239,17 +185,12 @@ public class Expense  extends Activity{
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-
-
-
-
                 if( num.getText().toString().equals("")){
                     number = 1;
                 }
                 else{
                     number = Integer.parseInt(num.getText().toString());
                 }
-
 
                 if(s.length() == 0){
                     expenseoutput.setText("");
@@ -363,18 +304,12 @@ public class Expense  extends Activity{
 
 
                         TextView txt2 = new TextView(btnconfirm.getContext());
-                        txt2.setText("$ " + Double.toString(expense));
+                        txt2.setText("$ " + String.format("%.2f",expense));
                         txt2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                         txt2.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
                         newEntry.addView(txt2);
 
-                        //show subtotal
-                        /*
-                        TextView txt3 = new TextView(btnconfirm.getContext());
-                        String strsubtotal = "$" + subtotal;
-                        txt3.setText(strsubtotal);
-                        newEntry.addView(txt3);
-                        */
+
 
                         //show category
                         newEntry.addView(newCat);
@@ -382,9 +317,9 @@ public class Expense  extends Activity{
                         //show comment
                         newEntry.addView(newComment);
 
-                        //set tag for index
-                        newEntry.setTag(tuples.size());
-                        //finalindex++;
+
+
+
 
 
                         newEntry.setOnClickListener(new View.OnClickListener() {
@@ -419,9 +354,6 @@ public class Expense  extends Activity{
 
                         //show remove button
 
-
-
-
                         //ADD THIS NEW VALID ENTRY TO TABLE OF ENTRIES
                         entries.addView(newEntry);
                         //INCREASE THE OVERALL TOTAL BY THE SUBTOTAL(NUMBER * EXPENSE)
@@ -442,12 +374,8 @@ public class Expense  extends Activity{
                         Quintet<DateTime, Double, Integer, String, String> tuple = new Quintet<>(currentDay,expense,number,category,comment);
                         tuples.add(tuple);
 
-
                         Log.i("TUPLES", "ADDED NEW TUPLE IN EXPENSE.JAVA < " + currentDay + " " +  expense + " " + number + " " + category + " " + comment + " >");
 
-
-
-                        /////////////////////////////////////////////////////////////////////
                         //clear out previous
                         Log.i("BTNCONFIRM", "RESETTING EXPENSES AFTER SUCCESSFUL ADDITION OF ENTRY");
                         num.setText("");
@@ -475,16 +403,7 @@ public class Expense  extends Activity{
                             l.getChildAt(i).setVisibility(View.VISIBLE);
                         }
                     }
-
                 }
-
-
-
-
-
-
-
-
             }
         });
 
@@ -496,22 +415,6 @@ public class Expense  extends Activity{
 
                 for(Quintet<DateTime,Double,Integer, String, String> q : tuples) {
 
-                    /*
-                    Adding entry into DATABASE, make sure date is String
-                    cannot put object types into Room databases
-
-
-                    newExp.setCost(double cost);
-                    newExp.setQuantity(int quantity);
-                    newExp.setComment(String comment);
-                    newExp.setDate(String date);
-                    newExp.setCategory(String category);
-
-
-
-                     */
-
-
                     EXPTBL newExp = new EXPTBL();
                     //After setting all values into this EXPTBL can add it to database
                     //through the data access object interface
@@ -522,7 +425,6 @@ public class Expense  extends Activity{
                     newExp.setQuantity(q.getValue2());
                     newExp.setComment(q.getValue4());
 
-                    //date cannot be type Date
                     //convert date to string
                     String s = q.getValue0().getYear() + "-" + q.getValue0().getMonthOfYear() + "-" + q.getValue0().getDayOfMonth()
                             + " " + q.getValue0().getHourOfDay() + ":" + q.getValue0().getMinuteOfHour() + ":" + q.getValue0().getSecondOfMinute();
@@ -539,18 +441,9 @@ public class Expense  extends Activity{
 
                 }
                 Intent i = new Intent();
-
-
-
                 setResult(RESULT_OK, i);
                 finish();
             }
         });
-
-
     }
-
-
-
-
 }
