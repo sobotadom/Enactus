@@ -1,12 +1,20 @@
 package enactus.budget.enactus;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -61,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         JodaTimeAndroid.init(this);
 
         //UPDATE DATABASE
-
 
 
         updateGoal1();
@@ -238,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                 //show dialogan get the proper date
 
                 Calendar cal = Calendar.getInstance();
-                DateTime today = new DateTime(DateTimeZone.UTC);
+                DateTime today = new DateTime(DateTimeZone.getDefault());
                 Log.i("DATE", Integer.toString(today.getMonthOfYear()));
 
 
@@ -303,13 +310,45 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    private void showNotification(String msg, String passfail){
+
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+
+        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext())
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setContentText(msg)
+                .setContentTitle(passfail)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg));
+
+        NotificationManager m = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+
+            String CHANNEL_ID = "my_channel";
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Noitfication", NotificationManager.IMPORTANCE_DEFAULT);
+            m.createNotificationChannel(channel);
+            b.setChannelId(CHANNEL_ID);
+
+        }
+        m.notify(1,b.build());
+
+
+    }
+
     private void inputGoal(int y, int m, int d, int id){
 
         GOALDB dataBase = GOALDB.getGOALDB(getApplicationContext());
         GOALBL newGoal = new GOALBL();
 
 
-        DateTime today = new DateTime(DateTimeZone.UTC);
+        DateTime today = new DateTime(DateTimeZone.getDefault());
         String s = today.getYear() + "-" + today.getMonthOfYear() + "-" + today.getDayOfMonth() + " " + today.getHourOfDay() + ":" + today.getMinuteOfHour() + ":" + today.getSecondOfMinute();
 
 
@@ -423,7 +462,7 @@ public class MainActivity extends AppCompatActivity {
         if( fixed != null){
 
             DateTime end = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(fixed.getEnd());
-            DateTime today = new DateTime(DateTimeZone.UTC);
+            DateTime today = new DateTime(DateTimeZone.getDefault());
 
 
 
@@ -433,7 +472,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+            Log.i("DAYS", today.toString());
+            Log.i("DAYS", end.withTimeAtStartOfDay().toString());
+            Log.i("DAYS", Integer.toString(Days.daysBetween(today.withTimeAtStartOfDay(), end.withTimeAtStartOfDay()).getDays()));
             if(Days.daysBetween(today.withTimeAtStartOfDay(), end.withTimeAtStartOfDay()).getDays() < 1 ){ //goal is complete, reset back
 
                 if (fixed.getProgress() >= 0.00) {  //test is progress is negative or positive
@@ -441,15 +482,20 @@ public class MainActivity extends AppCompatActivity {
                     GOALDB.getGOALDB(this).goalDAO().goalPassed("Fixed");
 
                     Log.i("FIXED STATUS",fixed.getStatus());
-                    showPopup("You completed your fixed Goal of " + fixed.getGoal() + " \nfrom " + fixed.getStart() + " to " + fixed.getEnd() );
+                    String s = "You completed your fixed Goal of " + fixed.getGoal() + " \nfrom " + fixed.getStart() + " to " + fixed.getEnd();
+                    showPopup(s );
                     //NOTIFACTION?????
+                    showNotification(s, "Pass");
+
                 }
                 else{
                     resetGoals(R.id.txtgoal1,R.id.cat1goal, R.id.btngoal1);
                     GOALDB.getGOALDB(this).goalDAO().goalFailed("Fixed");
                     Log.i("MAIN","fixed Goal failed!");
-                    showPopup("You failed your fixed Goal of " + fixed.getGoal() + " \nfrom " + fixed.getStart() + " to " + fixed.getEnd() );
-                    //NOTIFICATION????
+                    String s = "You failed your fixed Goal of " + fixed.getGoal() + " \nfrom " + fixed.getStart() + " to " + fixed.getEnd();
+                    showPopup(s );
+                    //NOTIFACTION?????
+                    showNotification(s, "Fail");
                 }
 
                 threeFails();
@@ -462,7 +508,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Button btn = findViewById(R.id.btngoal1);
                 btn.setEnabled(false);
-                btn.setText(Integer.toString(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays()));
+                btn.setText(Integer.toString(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays()) + " days remain");
                 findViewById(R.id.cat1goal).setVisibility(View.GONE);
 
                 TextView txt = findViewById(R.id.txtgoal1);
@@ -500,7 +546,7 @@ public class MainActivity extends AppCompatActivity {
         if(flex != null){
 
             DateTime end = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(flex.getEnd());
-            DateTime today = new DateTime(DateTimeZone.UTC);
+            DateTime today = new DateTime(DateTimeZone.getDefault());
 
 
 
@@ -516,17 +562,18 @@ public class MainActivity extends AppCompatActivity {
                 if (flex.getProgress() >= 0.00) {  //test is progress is negative or positive
                     resetGoals(R.id.txtgoal2,R.id.cat2goal, R.id.btngoal2);
                     GOALDB.getGOALDB(this).goalDAO().goalPassed("Flexible");
-                    showPopup("You completed your flexible Goal of " + flex.getGoal() + " \nfrom " + flex.getStart() + " to " + flex.getEnd() );
-                    Log.i("MAIN","flex Goal complete!");
-
+                    String s = "You completed your flexible Goal of " + flex.getGoal() + " \nfrom " + flex.getStart() + " to " + flex.getEnd();
+                    showPopup(s );
                     //NOTIFACTION?????
+                    showNotification(s, "Pass");
                 }
                 else{
                     resetGoals(R.id.txtgoal2,R.id.cat2goal, R.id.btngoal2);
                     GOALDB.getGOALDB(this).goalDAO().goalFailed("Flexible");
-                    showPopup("You failed your flexible Goal of " + flex.getGoal() + " \nfrom " + flex.getStart() + " to " + flex.getEnd() );
-                    Log.i("MAIN","flex Goal failed!");
-                    //NOTIFICATION????
+                    String s = "You failed your flexible Goal of " + flex.getGoal() + " \nfrom " + flex.getStart() + " to " + flex.getEnd();
+                    showPopup(s );
+                    //NOTIFACTION?????
+                    showNotification(s, "Fail");
                 }
 
                 threeFails();
@@ -540,7 +587,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Button btn = findViewById(R.id.btngoal2);
                 btn.setEnabled(false);
-                btn.setText(Integer.toString(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays()));
+                btn.setText(Integer.toString(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays()) + " days remain");
                 findViewById(R.id.cat2goal).setVisibility(View.GONE);
 
                 TextView txt = findViewById(R.id.txtgoal2);
@@ -570,7 +617,7 @@ public class MainActivity extends AppCompatActivity {
         if(disc != null){
 
             DateTime end = DateTimeFormat.forPattern("yyyy-MM-dd").parseDateTime(disc.getEnd());
-            DateTime today = new DateTime(DateTimeZone.UTC);
+            DateTime today = new DateTime(DateTimeZone.getDefault());
 
 
 
@@ -589,15 +636,19 @@ public class MainActivity extends AppCompatActivity {
                     resetGoals(R.id.txtgoal3,R.id.cat3goal, R.id.btngoal3);
                     GOALDB.getGOALDB(this).goalDAO().goalPassed("Discretionary");
                     Log.i("MAIN","disc Goal complete!");
-                    showPopup("You completed your discretionary Goal of " + disc.getGoal() + " \nfrom " + disc.getStart() + " to " + disc.getEnd() );
-
+                    String s = "You completed your discretionary Goal of " + disc.getGoal() + " \nfrom " + disc.getStart() + " to " + disc.getEnd();
+                    showPopup(s );
+                    //NOTIFACTION?????
+                    showNotification(s, "Pass");
                 }
                 else{
                     resetGoals(R.id.txtgoal3,R.id.cat3goal, R.id.btngoal3);
                     GOALDB.getGOALDB(this).goalDAO().goalFailed("Discretionary");
                     Log.i("MAIN","disc Goal failed!");
-                    showPopup("You failed your discretionary Goal of " + disc.getGoal() + "\n from " + disc.getStart() + " to " + disc.getEnd() );
-
+                    String s = "You failed your discretionary Goal of " + disc.getGoal() + " \nfrom " + disc.getStart() + " to " + disc.getEnd();
+                    showPopup(s );
+                    //NOTIFACTION?????
+                    showNotification(s, "Fail");
                     //NOTIFICATION????
                 }
 
@@ -611,7 +662,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Button btn = findViewById(R.id.btngoal3);
                 btn.setEnabled(false);
-                btn.setText(Integer.toString(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays()));
+                btn.setText(Integer.toString(Days.daysBetween(today.withTimeAtStartOfDay(),end.withTimeAtStartOfDay()).getDays()) + " days remain");
                 findViewById(R.id.cat3goal).setVisibility(View.GONE);
 
                 TextView txt = findViewById(R.id.txtgoal3);
@@ -689,7 +740,7 @@ public class MainActivity extends AppCompatActivity {
 
             //show start
             TextView start = new TextView(this);
-            start.setText(g.getStart().substring(0,8));
+            start.setText(g.getStart().substring(0,9));
             start.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tr.addView(start);
 
@@ -860,7 +911,7 @@ public class MainActivity extends AppCompatActivity {
 
             //date
             TextView date = new TextView(this);
-            date.setText(current.getDate().substring(0,8));
+            date.setText(current.getDate().substring(0,9));
             date.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             tr.addView(date);
 
@@ -957,9 +1008,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void threeFails(){
         int fails = GOALDB.getGOALDB(this).goalDAO().numFail();
-        if( fails >= 3){
-            showPopup("HERE IS WHERE ILL PUT SOME RESOURCES");
+        if( fails > 2 && fails < 6){
+            showPopup("Resource One");
         }
+        else if (fails > 5 && fails < 9 ){
+            showPopup("Resource two");
+        }
+
 
 
     }
