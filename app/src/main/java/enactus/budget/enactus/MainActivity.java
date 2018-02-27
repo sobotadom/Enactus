@@ -312,13 +312,21 @@ public class MainActivity extends AppCompatActivity {
     }
     private void showNotification(String msg, String passfail){
 
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR, 8);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND,0);
 
-        Intent intent = new Intent(this, MainActivity.class);
+
+
+        Intent intent = new Intent(this, Notification_Reciever.class);
+        intent.putExtra("msg", msg);
+        intent.putExtra("passfail", passfail);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 
-        NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext())
+        /*NotificationCompat.Builder b = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.drawable.ic_launcher_background)
                 .setContentText(msg)
                 .setContentTitle(passfail)
@@ -337,7 +345,11 @@ public class MainActivity extends AppCompatActivity {
             b.setChannelId(CHANNEL_ID);
 
         }
-        m.notify(1,b.build());
+        */
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent );
+
+        //
 
 
     }
