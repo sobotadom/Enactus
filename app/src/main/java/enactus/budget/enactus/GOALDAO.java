@@ -17,6 +17,8 @@ public interface GOALDAO {
     @Insert
     void insertGoal(GOALBL... goalbls);
 
+
+
     @Query("SELECT * FROM goals")
     List<GOALBL> getAllGoals();
 
@@ -46,4 +48,6 @@ public interface GOALDAO {
 
     @Query("SELECT COUNT(*) from goals WHERE status=\"Fail\" ")
     int numFail();
+
+
 }

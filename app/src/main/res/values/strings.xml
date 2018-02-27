@@ -13,6 +13,8 @@
     Finelly is an application platform that aims to provide analytics that help you understand your spending habits better, plan ahead and stay within your budget that you set!\n\nFor more reasons to help you learn how to budget and save, check out our first Enactus app about budgetting and credit,
     <a href="https://play.google.com/store/apps/details?id=com.enactus.ifinance&amp;hl=en">iFinance</a>!\nAlternatively, great sources are out there to learn about financial <a href="https://www.canada.ca/en/financial-consumer-agency/services/financial-basics.html">Literacy</a>!
     </string>
+    <string name="fail1">Need help budgeting? Check out our other app <a href="https://play.google.com/store/apps/details?id=com.enactus.ifinance&amp;hl=en">iFinance</a> !</string>
+    <string name="fail2">Need help budgeting? Check out this  <a href="https://www.canada.ca/en/financial-consumer-agency/services/financial-basics.html">Resource</a> !</string>
     <string-array name="categories">
         <item>Select Category</item>
         <item>Misc.</item>

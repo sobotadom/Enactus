@@ -18,7 +18,10 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -1021,12 +1024,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void threeFails(){
         int fails = GOALDB.getGOALDB(this).goalDAO().numFail();
-        if( fails > 2 && fails < 6){
-            showPopup("Resource One");
+        if( fails > 2 && fails < 7){
+
+            showPopup("Need help budgeting? \nCheck out the About Us page for some resources!");
+
+
         }
-        else if (fails > 5 && fails < 9 ){
-            showPopup("Resource two");
-        }
+
 
 
 
@@ -1043,8 +1047,6 @@ public class MainActivity extends AppCompatActivity {
                 dialog.cancel();        
          }
          });
-
-
 
 
 
