@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         //UPDATE DATABASE
 
-
+        showNotification("h","O");
         updateGoal1();
         updateGoal2();
         updateGoal3();
@@ -312,6 +312,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void showNotification(String msg, String passfail){
 
+       /*
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR, 8);
         cal.set(Calendar.MINUTE, 0);
@@ -345,12 +346,12 @@ public class MainActivity extends AppCompatActivity {
             b.setChannelId(CHANNEL_ID);
 
         }
-        */
+
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent );
 
         //
-
+        */
 
     }
 
@@ -465,7 +466,7 @@ public class MainActivity extends AppCompatActivity {
    
 
 
-    private void updateGoal1(){
+    public void updateGoal1(){
         Log.i("Main","Updating Goal1 ");
 
 
@@ -549,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void updateGoal2(){
+    public void updateGoal2(){
         Log.i("Main","Updating Goal2 ");
 
 
@@ -621,7 +622,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void updateGoal3(){
+    public void updateGoal3(){
         Log.i("Main","Updating Goal3 ");
 
         GOALBL disc = currentDiscretionary();
