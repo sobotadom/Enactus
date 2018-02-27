@@ -1102,6 +1102,10 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         }
+        else if( id == R.id.about){
+            Intent intentAbout = new Intent(MainActivity.this, About.class);
+            startActivity(intentAbout);
+        }
 
         return super.onOptionsItemSelected(item);
     }
